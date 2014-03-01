@@ -10,15 +10,17 @@ Portability : portable
 
 module Utils.FolderTest (testCases) where
 
+import Utils.Folder
 import Test.HUnit
 
 
 testCases :: [(String, Test)]
-testCases = [ ( "Empty index has length 0"
-              , TestCase prop_empty)
+testCases = [ ( "There are 2 files", TestCase $ prop_countFiles 3 "fixtures/Utils/Folder")
             
         ]
          
 -- | Check empty index         
-prop_empty :: Assertion         
-prop_empty = assertEqual "Empty index has 0 size" 0 0          
+prop_countFiles :: Int -> String -> Assertion         
+prop_countFiles e folder = do 
+    files <- listFiles folder
+    assertEqual ("Count files in: " ++ folder) e (length files)          
