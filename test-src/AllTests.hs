@@ -6,5 +6,5 @@ import Utils.FolderTest (testCases)
 
 
 tests :: IO [C.Test]
-tests = return $ map (uncurry H.test) $  Mavex.IndexTest.testCases
+tests = return $ map (uncurry H.test) $  Utils.FolderTest.testCases
                                       

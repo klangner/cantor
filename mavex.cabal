@@ -24,10 +24,14 @@ executable mavex
   hs-source-dirs:   src
   main-is:          Main.hs
   default-language: Haskell2010
-  build-depends:    base >= 4 && <4.7
+  build-depends:    
+                    base >= 4 && <4.7,
+                    directory >=1.2.0 && <1.3
 
   ghc-options:      -Wall
-  other-modules:    Maven.Pom
+  other-modules:    
+                    Maven.Pom,
+                    Utils.Folder
 
 test-suite unit-tests
   type:             detailed-0.9
@@ -42,7 +46,8 @@ test-suite unit-tests
 
   other-modules:   
                     Distribution.TestSuite.HUnit,
-                    Maven.Pom
+                    Maven.Pom,
+                    Utils.FolderTest
   hs-source-dirs:  
                     src,
                     test-src
