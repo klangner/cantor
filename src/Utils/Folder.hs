@@ -6,7 +6,8 @@ License : BSD3
 Helper module with functions operating on IO
 -}
 module Utils.Folder
-        ( listFiles
+        ( joinPaths
+        , listFiles
         , listDirs
         )where
 
@@ -36,4 +37,10 @@ list p = do
     path <- canonicalizePath p  
     return $ map ((path++"/")++) filtered
     where f x = (x /= ".") && (x /= "..") && (not . isPrefixOf ".") x
+    
+-- | Join 2 paths. 
+joinPaths :: FilePath -> FilePath -> FilePath
+joinPaths f1 f2 = case last f1 of
+                '/' -> f1 ++ f2
+                _ -> f1 ++ "/" ++ f2     
     
