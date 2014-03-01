@@ -1,12 +1,12 @@
-name:           abel
-version:        0.4
+name:           mavex
+version:        0.1
 cabal-version:  >= 1.10
 build-type:     Simple
 author:         Krzysztof Langner
 maintainer:     klangner@gmail.com
-synopsis:       Gather information from source code
-homepage:       https://github.com/klangner/abel
-Bug-reports:    https://github.com/klangner/abel/issues
+synopsis:       Analiza Java source code
+homepage:       https://github.com/klangner/mavex
+Bug-reports:    https://github.com/klangner/mavex/issues
 stability:      Unstable interface, incomplete features.
 category:       Application, source code analysis
 License:        BSD3
@@ -18,15 +18,16 @@ description:
 
 source-repository head
   type:     git
-  location: https://github.com/klangner/abel
+  location: https://github.com/klangner/mavex
 
-executable abel
+executable mavex
   hs-source-dirs:   src
   main-is:          Main.hs
   default-language: Haskell2010
   build-depends:    base >= 4 && <4.7
 
   ghc-options:      -Wall
+  other-modules:    Maven.Pom
 
 test-suite unit-tests
   type:             detailed-0.9
@@ -40,8 +41,8 @@ test-suite unit-tests
                     containers >=0.5.0 && <0.6
 
   other-modules:   
-                    Abel.IndexTest,
-                    Distribution.TestSuite.HUnit
+                    Distribution.TestSuite.HUnit,
+                    Maven.Pom
   hs-source-dirs:  
                     src,
                     test-src

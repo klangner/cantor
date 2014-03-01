@@ -1,6 +1,6 @@
 {- |
-Module : Condor.Search.IndexTest
-Copyright : Copyright (C) 2013-2014 Krzysztof Langner
+Module : Utils.FolderTest
+Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
 Maintainer : Krzysztof Langner <klangner@gmail.com>
@@ -8,7 +8,7 @@ Stability : alpha
 Portability : portable
 -}
 
-module Abel.IndexTest (testCases) where
+module Utils.FolderTest (testCases) where
 
 import Test.HUnit
 

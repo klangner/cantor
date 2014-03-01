@@ -6,4 +6,4 @@ import System.Environment
 main::IO()
 main = do
     (path:_) <- getArgs
-    putStrLn $ "Command: " ++ path
+    putStrLn $ "Project path: " ++ path
