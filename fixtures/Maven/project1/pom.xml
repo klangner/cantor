@@ -4,7 +4,7 @@
   <artifactId>ast</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Demo project</name>
-  <description>AST specification. Implementation should parse different languages</description>
+  <description>Same description text.</description>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>

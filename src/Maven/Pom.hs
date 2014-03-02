@@ -12,6 +12,7 @@ Get information from Maven POM file.
 module Maven.Pom ( Pom
                  , isValid
                  , load
+                 , projectDesc
                  , projectName
                  )where
 
@@ -41,3 +42,10 @@ projectName (Pom dom) = case getXPath "/project/name/text()" dom of
                          [NTree (XText a) _] -> a
                          _ -> ""
 projectName _ = ""
+    
+-- | Get project description from POM. 
+projectDesc :: Pom -> String
+projectDesc (Pom dom) = case getXPath "/project/description/text()" dom of
+                         [NTree (XText a) _] -> a
+                         _ -> ""
+projectDesc _ = ""
