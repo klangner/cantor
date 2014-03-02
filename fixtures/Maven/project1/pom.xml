@@ -3,7 +3,7 @@
   <groupId>com.klangner</groupId>
   <artifactId>ast</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Abstract Syntax Tree</name>
+  <name>Demo project</name>
   <description>AST specification. Implementation should parse different languages</description>
   <build>
     <sourceDirectory>src</sourceDirectory>

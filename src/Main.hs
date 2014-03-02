@@ -2,7 +2,7 @@ module Main where
 
 import System.Environment
 import Utils.Folder
-import Maven.Pom
+import Maven.Pom as Pom
 
 
 main::IO ()
@@ -16,6 +16,6 @@ main = do
 -- | Load POM file and get info about project    
 analyzePom :: FilePath -> IO Bool
 analyzePom f = do 
-    pom <- loadPom f
-    putStrLn $ "Load pom file: " ++ show(pom)
+    pom <- Pom.load f
+    putStrLn $ "Load pom file: " ++ show pom 
     return False

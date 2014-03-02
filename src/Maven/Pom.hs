@@ -10,24 +10,34 @@ Portability : portable
 Get information from Maven POM file.
 -}
 module Maven.Pom ( Pom
-                 , isValidPom
-                 , loadPom
+                 , isValid
+                 , load
+                 , projectName
                  )where
 
 import Text.XML.HXT.Core
+import Data.Tree.NTree.TypeDefs
+import Text.XML.HXT.XPath.XPathEval
 import System.Directory (doesFileExist)
 
 
 data Pom = Pom XmlTree | Empty deriving (Show)
 
 -- | Check if Pom is valid
-isValidPom :: Pom -> Bool
-isValidPom Empty = False
-isValidPom _ = True
+isValid :: Pom -> Bool
+isValid Empty = False
+isValid _ = True
 
 -- | Load POM data from file and store as XML DOM
-loadPom :: FilePath -> IO Pom 
-loadPom p = do 
+load :: FilePath -> IO Pom 
+load p = do 
     fileExists <- doesFileExist p
     xs <- if fileExists then runX (readDocument [] p) else return []
     return $ if not (null xs) then Pom (head xs) else Empty
+    
+-- | Get project name from POM. 
+projectName :: Pom -> String
+projectName (Pom dom) = case getXPath "/project/name/text()" dom of
+                         [NTree (XText a) _] -> a
+                         _ -> ""
+projectName _ = ""
