@@ -19,6 +19,7 @@ testCases = [ ( "No POM", TestCase $ prop_pomExists False "fixtures/Maven/invali
             , ( "POM exists", TestCase $ prop_pomExists True "fixtures/Maven/project1/pom.xml")
             , ( "Project name", TestCase $ prop_projectName "Demo project" "fixtures/Maven/project1/pom.xml")
             , ( "Project description", TestCase $ prop_projectDesc "Same description text." "fixtures/Maven/project1/pom.xml")
+            , ( "Project version", TestCase $ prop_projectVersion "0.0.1-SNAPSHOT" "fixtures/Maven/project1/pom.xml")
             ]
          
 -- | Joining paths         
@@ -37,4 +38,10 @@ prop_projectName name fp = do
 prop_projectDesc :: String -> FilePath -> Assertion         
 prop_projectDesc name fp = do
     pom <- load fp
-    assertEqual fp name (projectDesc pom)                  
+    assertEqual fp name (projectDesc pom)
+    
+-- | Get project version      
+prop_projectVersion :: String -> FilePath -> Assertion         
+prop_projectVersion name fp = do
+    pom <- load fp
+    assertEqual fp name (projectVersion pom)                                        

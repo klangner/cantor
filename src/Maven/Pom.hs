@@ -14,6 +14,7 @@ module Maven.Pom ( Pom
                  , load
                  , projectDesc
                  , projectName
+                 , projectVersion
                  )where
 
 import Text.XML.HXT.Core
@@ -49,3 +50,11 @@ projectDesc (Pom dom) = case getXPath "/project/description/text()" dom of
                          [NTree (XText a) _] -> a
                          _ -> ""
 projectDesc _ = ""
+
+    
+-- | Get project version. 
+projectVersion :: Pom -> String
+projectVersion (Pom dom) = case getXPath "/project/version/text()" dom of
+                         [NTree (XText a) _] -> a
+                         _ -> ""
+projectVersion _ = ""
