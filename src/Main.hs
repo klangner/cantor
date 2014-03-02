@@ -12,21 +12,20 @@ Main GUI application for gathering and presenting information..
 module Main where
 
 import System.Environment
+import Graphics.UI.Gtk
+import Control.Monad.Trans(liftIO)
 import Utils.Folder
 import Maven.Pom as Pom
 import Report
-import Graphics.UI.Threepenny       as UI
---import Graphics.UI.Threepenny.Core
 
 
 main::IO ()
 main = do
     (path:_) <- getArgs
     putStrLn $ "Project path: " ++ path
-    _ <- analyzePom (joinPaths path "pom.xml")
-    startGUI defaultConfig { tpStatic = Just "./report" } setup    
-    return ()
-    
+    report <- analyzePom (joinPaths path "pom.xml")
+    showReport report
+
     
 -- | Load POM file and analyze it    
 analyzePom :: FilePath -> IO Report
@@ -38,10 +37,13 @@ analyzePom f = do
                          , KeyValue "Version" (projectVersion pom)
                          ]
         ] 
+
     
-setup :: Window -> UI ()
-setup window = do    
-    _ <- return window # set UI.title "Hello World!"
-    b1 <- UI.button # set UI.text "Click me!"
-    _ <- getBody window #+ [element b1]
-    on UI.click b1 $ const $ element b1 # set UI.text "I have been clicked!"
+-- | Open GUI window with report data    
+showReport :: Report -> IO ()
+showReport _ = do
+    _ <- initGUI
+    window <- windowNew
+    _ <- window `on` deleteEvent $ liftIO mainQuit >> return False
+    widgetShowAll window
+    mainGUI
