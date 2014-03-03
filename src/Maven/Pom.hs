@@ -23,7 +23,7 @@ import Text.XML.HXT.XPath.XPathEval
 import System.Directory (doesFileExist)
 
 
-data Pom = Pom XmlTree | Empty deriving (Show)
+data Pom = Pom FilePath XmlTree | Empty deriving (Show)
 
 -- | Check if Pom is valid
 isValid :: Pom -> Bool
@@ -35,18 +35,18 @@ load :: FilePath -> IO Pom
 load p = do 
     fileExists <- doesFileExist p
     xs <- if fileExists then runX (readDocument [] p) else return []
-    return $ if not (null xs) then Pom (head xs) else Empty
+    return $ if not (null xs) then Pom p (head xs) else Empty
     
 -- | Get project name from POM. 
 projectName :: Pom -> String
-projectName (Pom dom) = case getXPath "/project/name/text()" dom of
+projectName (Pom _ dom) = case getXPath "/project/name/text()" dom of
                          [NTree (XText a) _] -> a
                          _ -> ""
 projectName _ = ""
     
 -- | Get project description from POM. 
 projectDesc :: Pom -> String
-projectDesc (Pom dom) = case getXPath "/project/description/text()" dom of
+projectDesc (Pom _ dom) = case getXPath "/project/description/text()" dom of
                          [NTree (XText a) _] -> a
                          _ -> ""
 projectDesc _ = ""
@@ -54,7 +54,7 @@ projectDesc _ = ""
     
 -- | Get project version. 
 projectVersion :: Pom -> String
-projectVersion (Pom dom) = case getXPath "/project/version/text()" dom of
+projectVersion (Pom _ dom) = case getXPath "/project/version/text()" dom of
                          [NTree (XText a) _] -> a
                          _ -> ""
 projectVersion _ = ""

@@ -34,7 +34,6 @@ executable mavex
   ghc-options:      -Wall
   other-modules:    
                     Maven.Pom,
-                    Report,
                     Utils.Folder
 
 test-suite unit-tests

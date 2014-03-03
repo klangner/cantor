@@ -7,41 +7,50 @@ Maintainer : Krzysztof Langner <klangner@gmail.com>
 Stability : alpha
 Portability : portable
 
-Create main window. 
+The application main window. 
 -}
-module MainFrame( displayReport
+module MainFrame( UI
                 , runGuiApp
+                , switchToNoProject
+                , switchToProject
                 ) where
 
 import Graphics.UI.Gtk
-import Report
 
 
--- | UI state
+-- | UI data type
 data UI = UI Window
 
 -- | Open GUI window with report data    
-runGuiApp :: IO UI
-runGuiApp = do
+runGuiApp :: FilePath -> IO ()
+runGuiApp src = do
     _ <- initGUI
-    window <- mainFrameNew
+    window <- windowNew
     _ <- onDestroy window mainQuit
-    windowSetDefaultSize window 800 600
+    windowSetDefaultSize window 480 640
     windowSetPosition window WinPosCenter
+    if null src then switchToNoProject (UI window)
+    else switchToProject (UI window) src
     widgetShowAll window
     mainGUI
-    return $ UI window
 
--- | Create main frame content
-mainFrameNew :: IO Window
-mainFrameNew = do
-    window <- windowNew
+
+-- | Switch to load project page 
+switchToNoProject :: UI -> IO ()   
+switchToNoProject (UI window) = do
     button <- buttonNew
     set window [ containerChild := button ]
-    set button [ buttonLabel := "Hello World" ]
-    _ <- onClicked button (putStrLn "Hello World")
-    return window
+    set button [ buttonLabel := "Load project" ]
+    _ <- onClicked button (switchToProject  (UI window) "???")
+    return ()
+
     
--- | Display report
-displayReport :: UI -> Report -> IO ()   
-displayReport _ _ = return ()
+-- | Switch to project page 
+switchToProject :: UI -> FilePath -> IO ()   
+switchToProject (UI window) src = do
+    button <- buttonNew
+    set window [ containerChild := button ]
+    set button [ buttonLabel := "Project path: " ++ src]
+    _ <- onClicked button (switchToNoProject  (UI window))
+    return ()
+    
