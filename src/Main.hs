@@ -12,8 +12,7 @@ Main GUI application for gathering and presenting information..
 module Main where
 
 import System.Environment
-import Graphics.UI.Gtk
-import Control.Monad.Trans(liftIO)
+import MainFrame
 import Utils.Folder
 import Maven.Pom as Pom
 import Report
@@ -24,7 +23,9 @@ main = do
     (path:_) <- getArgs
     putStrLn $ "Project path: " ++ path
     report <- analyzePom (joinPaths path "pom.xml")
-    showReport report
+    ui <- runGuiApp
+    displayReport ui report
+    return ()
 
     
 -- | Load POM file and analyze it    
@@ -39,11 +40,3 @@ analyzePom f = do
         ] 
 
     
--- | Open GUI window with report data    
-showReport :: Report -> IO ()
-showReport _ = do
-    _ <- initGUI
-    window <- windowNew
-    _ <- window `on` deleteEvent $ liftIO mainQuit >> return False
-    widgetShowAll window
-    mainGUI

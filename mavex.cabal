@@ -29,8 +29,7 @@ executable mavex
                     directory >=1.2.0 && <1.3,
                     hxt >= 9.3 && < 9.4,
                     hxt-xpath >=9.1.2 && <9.2,
-                    gtk >=0.12.4 && <0.13,
-                    monads-tf >=0.1.0 && <0.2
+                    gtk >=0.12.4 && <0.13
 
   ghc-options:      -Wall
   other-modules:    
