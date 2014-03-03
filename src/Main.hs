@@ -59,5 +59,13 @@ flags =
 summaryAction :: FilePath -> IO ()
 summaryAction src = do
     pom <- Pom.load (joinPaths src "pom.xml")
-    _ <- putStrLn (if isValid pom then "Project: " ++ projectName pom else "Not maven project.")
-    return ()
+    printMavenInfo pom
+    
+
+-- | Print information found in POM file
+printMavenInfo :: Pom -> IO ()
+printMavenInfo pom | isValid pom = do 
+                        putStrLn $ "Maven project name: " ++ projectName pom
+                        putStrLn $ "Description: " ++ projectDesc pom
+                        putStrLn $ "Version: " ++ projectVersion pom
+                   | otherwise = putStrLn "This is not maven project."     
