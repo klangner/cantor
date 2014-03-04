@@ -66,6 +66,6 @@ summaryAction src = do
 printMavenInfo :: Pom -> IO ()
 printMavenInfo pom | isValid pom = do 
                         putStrLn $ "Maven project name: " ++ projectName pom
-                        putStrLn $ "Description: " ++ projectDesc pom
-                        putStrLn $ "Version: " ++ projectVersion pom
+                        putStrLn $ "Path to source: " ++ projectSrcPath pom
+                        putStrLn $ "Path to test: " ++ projectTestPath pom
                    | otherwise = putStrLn "This is not maven project."     

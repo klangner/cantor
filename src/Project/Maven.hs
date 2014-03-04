@@ -14,6 +14,8 @@ module Project.Maven ( Pom
                  , load
                  , projectDesc
                  , projectName
+                 , projectSrcPath
+                 , projectTestPath
                  , projectVersion
                  )where
 
@@ -58,3 +60,20 @@ projectVersion (Pom _ dom) = case getXPath "/project/version/text()" dom of
                          [NTree (XText a) _] -> a
                          _ -> ""
 projectVersion _ = ""
+
+    
+-- | Get project source path. 
+projectSrcPath :: Pom -> String
+projectSrcPath (Pom _ dom) = case getXPath "/project/build/sourceDirectory/text()" dom of
+                         [NTree (XText a) _] -> a
+                         _ -> "src/main/java"
+projectSrcPath _ = ""
+
+
+    
+-- | Get project tests path. 
+projectTestPath :: Pom -> String
+projectTestPath (Pom _ dom) = case getXPath "/project/build/testSourceDirectory/text()" dom of
+                         [NTree (XText a) _] -> a
+                         _ -> "src/test/java"
+projectTestPath _ = ""

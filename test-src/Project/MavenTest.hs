@@ -20,6 +20,10 @@ testCases = [ ( "No POM", TestCase $ prop_pomExists False "fixtures/Maven/invali
             , ( "Project name", TestCase $ prop_projectName "Demo project" "fixtures/Maven/project1/pom.xml")
             , ( "Project description", TestCase $ prop_projectDesc "Same description text." "fixtures/Maven/project1/pom.xml")
             , ( "Project version", TestCase $ prop_projectVersion "0.0.1-SNAPSHOT" "fixtures/Maven/project1/pom.xml")
+            , ( "Project sources", TestCase $ prop_projectSrc "src" "fixtures/Maven/project1/pom.xml")
+            , ( "Project default sources", TestCase $ prop_projectSrc "src/main/java" "fixtures/Maven/minimal/pom.xml")
+            , ( "Project test path", TestCase $ prop_projectTest "src-test" "fixtures/Maven/project1/pom.xml")
+            , ( "Project default test path", TestCase $ prop_projectTest "src/test/java" "fixtures/Maven/minimal/pom.xml")
             ]
          
 -- | Joining paths         
@@ -45,3 +49,15 @@ prop_projectVersion :: String -> FilePath -> Assertion
 prop_projectVersion name fp = do
     pom <- load fp
     assertEqual fp name (projectVersion pom)                                        
+        
+-- | Get source location      
+prop_projectSrc :: String -> FilePath -> Assertion         
+prop_projectSrc src fp = do
+    pom <- load fp
+    assertEqual fp src (projectSrcPath pom)
+                                                        
+-- | Get test location      
+prop_projectTest :: String -> FilePath -> Assertion         
+prop_projectTest src fp = do
+    pom <- load fp
+    assertEqual fp src (projectTestPath pom)                                            
