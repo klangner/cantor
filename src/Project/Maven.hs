@@ -7,7 +7,7 @@ Maintainer : Krzysztof Langner <klangner@gmail.com>
 Stability : alpha
 Portability : portable
 
-Get information from Maven POM file.
+Get information about project from Maven POM file.
 -}
 module Project.Maven ( Pom
                  , isValid
