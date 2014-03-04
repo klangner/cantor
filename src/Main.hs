@@ -15,7 +15,7 @@ import System.Environment
 import System.Console.GetOpt
 import System.Exit
 import Utils.Folder
-import Maven.Pom as Pom
+import Project.Maven as Pom
 
 
 data Flag = Maven             -- -m

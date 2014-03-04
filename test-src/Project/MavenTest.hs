@@ -1,5 +1,5 @@
 {- |
-Module : Maven.PomTest
+Module : Project.MavenTest
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -8,9 +8,9 @@ Stability : alpha
 Portability : portable
 -}
 
-module Maven.PomTest (testCases) where
+module Project.MavenTest (testCases) where
 
-import Maven.Pom as Pom
+import Project.Maven as Pom
 import Test.HUnit
 
 

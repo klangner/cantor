@@ -33,8 +33,8 @@ executable mavex
 
   ghc-options:      -Wall
   other-modules:    
-                    Maven.Pom,
-                    Utils.Folder
+                    Utils.Folder,
+                    Project.Maven
 
 test-suite unit-tests
   type:             detailed-0.9
@@ -51,10 +51,10 @@ test-suite unit-tests
 
   other-modules:   
                     Distribution.TestSuite.HUnit,
-                    Maven.Pom,
-                    Maven.PomTest,
                     Utils.Folder,
-                    Utils.FolderTest
+                    Utils.FolderTest,
+                    Project.Maven,
+                    Project.MavenTest
   hs-source-dirs:  
                     src,
                     test-src

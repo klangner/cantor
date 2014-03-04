@@ -1,5 +1,5 @@
 {- |
-Module : Maven.Pom
+Module : Project.Maven
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -9,7 +9,7 @@ Portability : portable
 
 Get information from Maven POM file.
 -}
-module Maven.Pom ( Pom
+module Project.Maven ( Pom
                  , isValid
                  , load
                  , projectDesc
