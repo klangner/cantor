@@ -13,6 +13,7 @@ module Project.Maven ( Pom
                      , getProjectInfo
                      , isValid
                      , load
+                     , pomNew
                      , projectDesc
                      , projectName
                      , projectSrcPath
@@ -23,6 +24,7 @@ module Project.Maven ( Pom
 import Text.XML.HXT.Core
 import Data.Tree.NTree.TypeDefs
 import Text.XML.HXT.XPath.XPathEval
+import qualified Text.XML.HXT.Parser.XmlParsec as XP
 import System.Directory (doesFileExist)
 
 
@@ -31,10 +33,31 @@ data Pom = Pom { projectSrc :: FilePath
                } 
          | Empty deriving (Show)
 
+
 -- | Check if Pom is valid
 isValid :: Pom -> Bool
 isValid Empty = False
 isValid _ = True
+
+
+-- | Create new POM file
+pomNew :: String -> String -> Pom
+pomNew src name = Pom src xmlTree
+    where xmlTree = head $ XP.xread (pomXml name)
+    
+
+-- | Default empty POM XML
+pomXml :: String -> String
+pomXml name = "<project xmlns='http://maven.apache.org/POM/4.0.0' " 
+              ++ "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " 
+              ++ "xsi:schemaLocation='http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd'>" 
+              ++ "  <modelVersion>4.0.0</modelVersion>"
+              ++ "  <groupId>com.klangner</groupId>"
+              ++ "  <artifactId>ast</artifactId>"
+              ++ "  <version>0.0.1-SNAPSHOT</version>"
+              ++ "  <name>" ++ name ++ "</name>"
+              ++ "</project>"
+
 
 -- | Load POM data from file and store as XML DOM
 load :: FilePath -> IO Pom 
@@ -43,12 +66,14 @@ load p = do
     xs <- if fileExists then runX (readDocument [] p) else return []
     return $ if not (null xs) then Pom p (head xs) else Empty
     
+    
 -- | Get project name from POM. 
 projectName :: Pom -> String
 projectName (Pom _ dom) = case getXPath "/project/name/text()" dom of
                          [NTree (XText a) _] -> a
                          _ -> ""
 projectName _ = ""
+    
     
 -- | Get project description from POM. 
 projectDesc :: Pom -> String

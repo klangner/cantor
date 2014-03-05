@@ -16,6 +16,7 @@ import Test.HUnit
 
 testCases :: [(String, Test)]
 testCases = [ ( "No POM", TestCase $ prop_pomExists False "fixtures/Maven/invalid")
+            , ( "New POM", TestCase prop_pomNew )
             , ( "POM exists", TestCase $ prop_pomExists True "fixtures/Maven/project1/pom.xml")
             , ( "Project name", TestCase $ prop_projectName "Demo project" "fixtures/Maven/project1/pom.xml")
             , ( "Project description", TestCase $ prop_projectDesc "Same description text." "fixtures/Maven/project1/pom.xml")
@@ -26,11 +27,17 @@ testCases = [ ( "No POM", TestCase $ prop_pomExists False "fixtures/Maven/invali
             , ( "Project default test path", TestCase $ prop_projectTest "src/test/java" "fixtures/Maven/minimal/pom.xml")
             ]
          
--- | Joining paths         
+-- | Check if POM exists at specific location
 prop_pomExists :: Bool -> FilePath -> Assertion         
 prop_pomExists e fp = do
     pom <- load fp
     assertEqual fp e (isValid pom)          
+         
+-- | Try to create new POM
+prop_pomNew :: Assertion         
+prop_pomNew = do
+    let pom = pomNew "" "test name" 
+    assertEqual "" "test name" (projectName pom)          
     
 -- | Get project name
 prop_projectName :: String -> FilePath -> Assertion         
