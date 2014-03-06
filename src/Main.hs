@@ -14,7 +14,7 @@ module Main where
 import System.Environment
 import System.Console.GetOpt
 import System.Exit
-import Utils.Folder
+import System.FilePath (normalise)
 import Messages
 import Project.Maven as Pom
 
@@ -78,8 +78,9 @@ printMavenInfo src pom | isValid pom = putStrLn (getProjectInfo pom)
 -- | Print information about project
 analyzeAction :: FilePath -> IO ()
 analyzeAction src = do
-    pom <- Pom.load (joinPaths src "pom.xml")
+    pom <- Pom.load pomPath
     printMavenInfo src pom
+    where pomPath = normalise (src ++ "/pom.xml")
     
 
 -- | Execute command

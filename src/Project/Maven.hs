@@ -19,6 +19,8 @@ module Project.Maven ( Pom
                      , projectSrcPath
                      , projectTestPath
                      , projectVersion
+                     , rename
+                     , save
                      )where
 
 import Text.XML.HXT.Core
@@ -26,6 +28,7 @@ import Data.Tree.NTree.TypeDefs
 import Text.XML.HXT.XPath.XPathEval
 import qualified Text.XML.HXT.Parser.XmlParsec as XP
 import System.Directory (doesFileExist)
+import System.FilePath (splitDirectories)
 
 
 data Pom = Pom { projectSrc :: FilePath 
@@ -40,10 +43,11 @@ isValid Empty = False
 isValid _ = True
 
 
--- | Create new POM file
-pomNew :: String -> String -> Pom
-pomNew src name = Pom src xmlTree
+-- | Create new POM file. Last part of the path is recognized as project name
+pomNew :: String -> Pom
+pomNew src = Pom src xmlTree
     where xmlTree = head $ XP.xread (pomXml name)
+          name = last (splitDirectories src)
     
 
 -- | Default empty POM XML
@@ -65,7 +69,14 @@ load p = do
     fileExists <- doesFileExist p
     xs <- if fileExists then runX (readDocument [] p) else return []
     return $ if not (null xs) then Pom p (head xs) else Empty
-    
+
+
+-- | Save POM
+save :: Pom -> IO () 
+save (Pom src dom) = do 
+    _ <- runX $ root [] [constA dom] >>> writeDocument [withIndent yes] src
+    return ()
+save Empty = return ()     
     
 -- | Get project name from POM. 
 projectName :: Pom -> String
@@ -113,3 +124,14 @@ getProjectInfo pom = "POM location: " ++ projectSrc pom ++ "\n" ++
                      "Project name: " ++ projectName pom ++ "\n" ++
                      "Sources: " ++ projectSrcPath pom ++ "\n" ++
                      "Tests: " ++ projectTestPath pom ++ "\n"
+                     
+-- | Rename project
+rename :: Pom -> String -> Pom
+rename pom _ = pom
+
+--rename' :: ArrowXml a => String -> a XmlTree XmlTree
+--rename' name = processTopDownUntil $ changeText (const name) `when` isNameNode     
+  --  where isNameNode = isElem >>> hasName "name"
+
+
+

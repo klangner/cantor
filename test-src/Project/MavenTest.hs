@@ -10,6 +10,9 @@ Portability : portable
 
 module Project.MavenTest (testCases) where
 
+import Control.Monad
+import System.FilePath (normalise)
+import System.Directory (doesFileExist, removeFile)
 import Project.Maven as Pom
 import Test.HUnit
 
@@ -25,6 +28,7 @@ testCases = [ ( "No POM", TestCase $ prop_pomExists False "fixtures/Maven/invali
             , ( "Project default sources", TestCase $ prop_projectSrc "src/main/java" "fixtures/Maven/minimal/pom.xml")
             , ( "Project test path", TestCase $ prop_projectTest "src-test" "fixtures/Maven/project1/pom.xml")
             , ( "Project default test path", TestCase $ prop_projectTest "src/test/java" "fixtures/Maven/minimal/pom.xml")
+            , ( "Save", TestCase prop_save)
             ]
          
 -- | Check if POM exists at specific location
@@ -36,8 +40,8 @@ prop_pomExists e fp = do
 -- | Try to create new POM
 prop_pomNew :: Assertion         
 prop_pomNew = do
-    let pom = pomNew "" "test name" 
-    assertEqual "" "test name" (projectName pom)          
+    let pom = pomNew "/home/user/projectA" 
+    assertEqual "" "projectA" (projectName pom)          
     
 -- | Get project name
 prop_projectName :: String -> FilePath -> Assertion         
@@ -68,3 +72,18 @@ prop_projectTest :: String -> FilePath -> Assertion
 prop_projectTest src fp = do
     pom <- load fp
     assertEqual fp src (projectTestPath pom)                                            
+    
+-- | Try save pom
+prop_save :: Assertion         
+prop_save = do
+    fileExists <- doesFileExist pomPath 
+    when fileExists (removeFile pomPath)
+    let pom = pomNew src
+    let pom2 = rename  pom "abc"
+    save pom2
+    pom3 <- load pomPath
+    assertEqual "" "abc" (projectName pom3)
+    where src = "fixtures/Maven/temp"
+          pomPath = normalise (src ++ "/pom.xml")           
+    
+        
