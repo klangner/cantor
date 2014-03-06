@@ -37,26 +37,21 @@ executable mavex
                     Utils.Folder,
                     Project.Maven
 
-test-suite unit-tests
-  type:             detailed-0.9
-  test-module:      AllTests
-  default-language: Haskell2010
-  ghc-options:      -Wall -rtsopts
+test-suite spec
+  type:             exitcode-stdio-1.0
+  main-is:          Spec.hs
   build-depends:   
                     base >= 4 && <4.7,
-                    HUnit >=1.2.5 && <1.3,
                     Cabal >=1.16.0 && <1.17,
                     directory >=1.2.0 && <1.3,
+                    filepath >=1.3.0 && <1.4,
+                    hspec >=1.7.2 && <1.8,
+                    QuickCheck >=2.6 && <2.7,
                     hxt >= 9.3 && < 9.4,
-                    hxt-xpath >=9.1.2 && <9.2,
-                    filepath >=1.3.0 && <1.4
+                    hxt-xpath >=9.1.2 && <9.2
+
 
   other-modules:   
-                    Distribution.TestSuite.HUnit,
-                    Utils.Folder,
-                    Utils.FolderTest,
-                    Project.Maven,
-                    Project.MavenTest
   hs-source-dirs:  
                     src,
                     test-src

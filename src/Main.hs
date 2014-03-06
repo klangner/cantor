@@ -14,9 +14,8 @@ module Main where
 import System.Environment
 import System.Console.GetOpt
 import System.Exit
-import System.FilePath (normalise)
-import Messages
-import Project.Maven as Pom
+import Project.Maven as Maven
+import Project.Model
 
 
 data Flag = Version             -- -v
@@ -69,18 +68,18 @@ printUsageInfo = do
     putStrLn (usageInfo "" flags)
     
 
--- | Print information found in POM file
-printMavenInfo :: FilePath -> Pom -> IO ()
-printMavenInfo src pom | isValid pom = putStrLn (getProjectInfo pom) 
-                       | otherwise = putStrLn $ errorNoPom src      
+-- | Print information about project
+printProjectInfo :: Project -> IO ()
+printProjectInfo prj = putStrLn (getProjectInfo prj) 
     
 
 -- | Print information about project
 analyzeAction :: FilePath -> IO ()
 analyzeAction src = do
-    pom <- Pom.load pomPath
-    printMavenInfo src pom
-    where pomPath = normalise (src ++ "/pom.xml")
+    pom <- Maven.loadProject src
+    case pom of
+        Just prj -> printProjectInfo prj
+        Nothing -> putStrLn "Maven POM file not found"
     
 
 -- | Execute command
