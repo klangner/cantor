@@ -11,7 +11,12 @@ AST model
 -}
 module AST.Model where
 
-data Package = Package Name [Package] [Class]
+
+data Package = Package { packageName :: String 
+                       , subPackages ::  [Package]
+                       , packageClasses :: [Class]
+                       }
+                       
 data Class = Class Name [Function]
 data Function = Function Name
          
