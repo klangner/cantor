@@ -1,12 +1,12 @@
 name:           cantor
-version:        0.1
+version:        0.2
 cabal-version:  >= 1.10
 build-type:     Simple
 author:         Krzysztof Langner
 maintainer:     klangner@gmail.com
 synopsis:       Analiza Java source code
 homepage:       https://github.com/klangner/cantor
-Bug-reports:    https://github.com/klangner/mavex/issues
+Bug-reports:    https://github.com/klangner/cantor/issues
 stability:      Unstable interface, incomplete features.
 category:       Application, source code analysis
 License:        BSD3
@@ -20,7 +20,7 @@ source-repository head
   type:     git
   location: https://github.com/klangner/cantor
 
-executable mavex
+executable cantor
   hs-source-dirs:   src
   main-is:          Main.hs
   default-language: Haskell2010

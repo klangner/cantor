@@ -14,13 +14,14 @@ module AST.JavaParser ( parseFile
 
 import AST.Model
 import Text.ParserCombinators.Parsec
+import Control.Monad (void)
 
 
 -- | Parse java source file
 parseFile :: FilePath -> IO Package
 parseFile fp = do
-    input <- readFile fp
-    case parse package "" input of
+    result <- parseFromFile package fp
+    case result of
         Left _ -> return $ Package "" [] []
         Right val -> return $ packageFromList val
 
@@ -28,6 +29,7 @@ parseFile fp = do
 -- | Parse package declaration    
 package :: Parser [String]
 package = do
+    skipComments
     _ <- string "package"
     skipMany1 space
     x <- dotSep
@@ -38,3 +40,27 @@ package = do
 -- | Parse dot separated names    
 dotSep :: Parser [String]    
 dotSep = many1 alphaNum `sepBy` char '.'
+
+
+-- | skip comments and spaces
+skipComments :: Parser ()
+skipComments = skipMany $ void comment <|> skipMany1 space
+
+-- | comment
+comment :: Parser String
+comment =    try multiLineComment
+         <|> singleLineComment
+         
+-- | Parse comment /* */
+multiLineComment :: Parser String
+multiLineComment = do
+    string "/*"
+    manyTill anyChar (try (string "*/"))
+
+
+-- | Parse comment //
+singleLineComment :: Parser String
+singleLineComment = do
+    string "//"
+    many (noneOf "\n")
+    
