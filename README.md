@@ -1,12 +1,12 @@
-# Mavex
+# Cantor
 
-Mavex is application for analyzing Java projects.
+Cantor is application for analyzing Java projects.
 
 ## Installation
-The library can be installed from [Hackage](http://hackage.haskell.org/package/mavex) with the command:
+The library can be installed from [Hackage](http://hackage.haskell.org/package/cantor) with the command:
 
 ```sh
-cabal install mavex
+cabal install cantor
 ```
 
 

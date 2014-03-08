@@ -1,11 +1,11 @@
-name:           mavex
+name:           cantor
 version:        0.1
 cabal-version:  >= 1.10
 build-type:     Simple
 author:         Krzysztof Langner
 maintainer:     klangner@gmail.com
 synopsis:       Analiza Java source code
-homepage:       https://github.com/klangner/mavex
+homepage:       https://github.com/klangner/cantor
 Bug-reports:    https://github.com/klangner/mavex/issues
 stability:      Unstable interface, incomplete features.
 category:       Application, source code analysis
@@ -18,7 +18,7 @@ description:
 
 source-repository head
   type:     git
-  location: https://github.com/klangner/mavex
+  location: https://github.com/klangner/cantor
 
 executable mavex
   hs-source-dirs:   src
