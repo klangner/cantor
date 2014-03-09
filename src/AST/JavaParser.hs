@@ -54,13 +54,13 @@ comment =    try multiLineComment
 -- | Parse comment /* */
 multiLineComment :: Parser String
 multiLineComment = do
-    string "/*"
+    _ <- string "/*"
     manyTill anyChar (try (string "*/"))
 
 
 -- | Parse comment //
 singleLineComment :: Parser String
 singleLineComment = do
-    string "//"
+    _ <- string "//"
     many (noneOf "\n")
     

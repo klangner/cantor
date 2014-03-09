@@ -28,3 +28,9 @@ packageFromList [] = Package "" [] []
 packageFromList [x] = Package x [] []
 packageFromList (x:xs) = Package x [packageFromList xs] []
 
+
+-- | Get package path from
+packageDirs :: Package -> [FilePath]
+packageDirs (Package a [] _) = [a]
+packageDirs (Package a xs _) = map ((a++"/") ++ ) sub
+    where sub = concatMap packageDirs xs 

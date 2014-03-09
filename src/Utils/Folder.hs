@@ -6,8 +6,9 @@ License : BSD3
 Helper module with functions operating on IO
 -}
 module Utils.Folder
-        ( listFiles
-        , listDirs
+        ( listDirs
+        , listFiles
+        , listFilesR
         )where
 
 import System.Directory (canonicalizePath, getDirectoryContents, doesDirectoryExist)
@@ -37,3 +38,12 @@ list p = do
     return $ map ((path++"/")++) filtered
     where f x = (x /= ".") && (x /= "..") && (not . isPrefixOf ".") x
     
+    
+-- | List all files in given directory and all subdirectories.
+-- Returns files with absolute path    
+listFilesR :: FilePath -> IO [FilePath]    
+listFilesR path = do
+    files <- listFiles path
+    dirs <- listDirs path
+    children <- mapM listFilesR dirs
+    return $ files ++ concat children
