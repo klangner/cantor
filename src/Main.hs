@@ -14,7 +14,9 @@ module Main where
 import System.Environment
 import System.Console.GetOpt
 import System.Exit
-import Project.Maven as Maven
+import Paths_cantor (version)
+import Data.Version (showVersion)
+import Project.Sources (findJavaClassPaths)
 import Project.Model
 
 
@@ -28,7 +30,7 @@ main = do
     argv <- getArgs
     case getOpt Permute flags argv of
         ([], cmd:src:_, []) -> commandAction cmd src
-        ([], [src], []) -> analyzeAction src
+        ([], [src], []) -> printPathsAction src
         ([Version], _, []) -> printVersion  
         ([Help], _, []) -> printUsageInfo
         (_, _, []) -> printUsageInfo
@@ -49,7 +51,7 @@ flags =
 -- | Print application version number
 printVersion :: IO ()
 printVersion = 
-    putStrLn "mavex version 0.1"
+    putStrLn $ "cantor version " ++ showVersion version
     
     
 -- | This action prints errors
@@ -62,9 +64,9 @@ errorAction errs = do
 -- | Print usage info
 printUsageInfo :: IO ()
 printUsageInfo = do
-    putStrLn "Usage: mavex [command] <project_path>"
+    putStrLn "Usage: cantor [command] <project_path>"
     putStrLn "  commands:"
-    putStrLn "    create - Create maven POM file."
+    putStrLn "    <none> - Print source class paths."
     putStrLn (usageInfo "" flags)
     
 
@@ -73,13 +75,13 @@ printProjectInfo :: Project -> IO ()
 printProjectInfo prj = putStrLn (getProjectInfo prj) 
     
 
--- | Print information about project
-analyzeAction :: FilePath -> IO ()
-analyzeAction src = do
-    pom <- Maven.loadProject src
-    case pom of
-        Just prj -> printProjectInfo prj
-        Nothing -> putStrLn "Maven POM file not found"
+-- | Print information about class paths
+printPathsAction :: FilePath -> IO ()
+printPathsAction src = do
+    paths <- findJavaClassPaths src
+    putStrLn (if null paths then "Can't find any valid Java files in: " ++ src 
+              else "Found Java class paths:")
+    mapM_ putStrLn paths
     
 
 -- | Execute command
