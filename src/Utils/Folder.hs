@@ -6,7 +6,8 @@ License : BSD3
 Helper module with functions operating on IO
 -}
 module Utils.Folder
-        ( listDirs
+        ( isJavaFile
+        , listDirs
         , listFiles
         , listFilesR
         )where
@@ -14,6 +15,7 @@ module Utils.Folder
 import System.Directory (canonicalizePath, getDirectoryContents, doesDirectoryExist)
 import Data.List
 import Control.Monad
+import System.FilePath (takeExtension)
 
 
 -- | list files
@@ -41,9 +43,18 @@ list p = do
     
 -- | List all files in given directory and all subdirectories.
 -- Returns files with absolute path    
-listFilesR :: FilePath -> IO [FilePath]    
-listFilesR path = do
+listFilesR :: (FilePath -> Bool)    -- Predicate to filter files
+           -> FilePath              -- Directory path
+           -> IO [FilePath]         -- Found file paths
+listFilesR p path = do
     files <- listFiles path
+    let filtered = filter p files
     dirs <- listDirs path
-    children <- mapM listFilesR dirs
-    return $ files ++ concat children
+    children <- mapM (listFilesR p) dirs 
+    return $ filtered ++ concat children
+
+-- | Predicate to check if given source is Java file
+isJavaFile :: FilePath -> Bool
+isJavaFile src = takeExtension src == ".java"
+              
+    

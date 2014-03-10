@@ -14,7 +14,7 @@ module Project.Sources ( findJavaClassPaths )where
 import System.FilePath (takeDirectory)
 import Data.List (isSuffixOf)
 import Data.Set (fromList, toList)
-import Utils.Folder (listFilesR)
+import Utils.Folder (isJavaFile, listFilesR)
 import AST.JavaParser (parseFile)
 import AST.Model (packageDirs)
 
@@ -24,7 +24,7 @@ import AST.Model (packageDirs)
 -- package declaration.
 findJavaClassPaths :: FilePath -> IO [FilePath] 
 findJavaClassPaths src = do 
-    files <- listFilesR src
+    files <- listFilesR isJavaFile src
     paths <- mapM javaFileClassPath files
     let validPaths = concatMap f paths
     return $ removeDuplicates validPaths
@@ -32,7 +32,6 @@ findJavaClassPaths src = do
               f (Just a) = [a]
               f Nothing = []
 
-              
 removeDuplicates :: Ord a => [a] -> [a]
 removeDuplicates = toList . fromList
     

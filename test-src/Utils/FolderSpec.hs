@@ -14,9 +14,10 @@ spec = do
 
   describe "List recursively" $ do 
     it "fixtures/utils/folder" $ do
-        files <- listFilesR "fixtures/utils/folder"
+        files <- listFilesR (const True) "fixtures/utils/folder"
         length files `shouldBe` 3
     it "fixtures/utils/abc" $ do
-        files <- listFilesR "fixtures/utils/abc"
+        files <- listFilesR (const True) "fixtures/utils/abc"
         length files `shouldBe` 5
+        
         

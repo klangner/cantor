@@ -18,6 +18,7 @@ import Paths_cantor (version)
 import Data.Version (showVersion)
 import Project.Sources (findJavaClassPaths)
 import Project.Model
+import Metric.Basic
 
 
 data Flag = Version             -- -v
@@ -67,6 +68,7 @@ printUsageInfo = do
     putStrLn "Usage: cantor [command] <project_path>"
     putStrLn "  commands:"
     putStrLn "    <none> - Print source class paths."
+    putStrLn "    loc - Print Line of code metric."
     putStrLn (usageInfo "" flags)
     
 
@@ -86,5 +88,16 @@ printPathsAction src = do
 
 -- | Execute command
 commandAction :: String -> FilePath -> IO ()
-commandAction _ _ = putStrLn "Commands not implemented yet."
+commandAction xs src | xs == "loc" = locCommand src
+                     | otherwise = putStrLn "Commands not implemented yet."
                    
+-- | Print LOC metric
+locCommand :: FilePath -> IO ()
+locCommand src = do 
+    loc <- lineOfCode src           
+    let loc1 = filter (\(_, a) -> a > 0) loc
+    mapM_ f loc1          
+        where f (ext, count) = putStrLn $ ext ++ " lines: " ++ fmt count
+              fmt :: Int -> String
+              fmt a = if a > 1000 then show (a `div` 1000) ++ "K" else show a
+              
