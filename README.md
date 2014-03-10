@@ -10,3 +10,5 @@ cabal install cantor
 ```
 
 
+## Usage
+Check [Usage page](doc/usage.md) for information how to use this application.
