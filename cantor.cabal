@@ -14,7 +14,15 @@ License-file:   LICENSE
 Extra-Source-Files:
                 CHANGES
 description:    
-    Application for analyzing Java source code
+    Application for analyzing Java source code.
+    .
+    Currently implemented:
+    .
+    * Finding project class paths.
+    .
+    * Line Of Code metric.
+    .
+    Check <https://github.com/klangner/cantor/blob/master/doc/usage.md documentation> for usage patterns.
 
 source-repository head
   type:     git
