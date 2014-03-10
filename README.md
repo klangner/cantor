@@ -2,6 +2,7 @@
 
 Cantor is application for analyzing Java projects.
 
+
 ## Installation
 The library can be installed from [Hackage](http://hackage.haskell.org/package/cantor) with the command:
 
@@ -11,4 +12,4 @@ cabal install cantor
 
 
 ## Usage
-Check [Usage page](doc/usage.md) for information how to use this application.
+Check [documentation](doc/usage.md) for available commands.
