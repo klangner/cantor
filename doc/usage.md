@@ -1,6 +1,6 @@
 # Usage
 
-## Find source paths
+## Find project source paths
 
 To find all source path use command:
 
@@ -25,7 +25,7 @@ Will print:
 /home/klangner/workspaces/haskell/cantor/fixtures/java/src1
 ```
 
-## Run lines of code (LOC) metric
+## Lines of code (LOC) metric
 
 To count number of lines in a given project use command:
 
