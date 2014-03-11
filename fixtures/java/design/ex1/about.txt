@@ -1,0 +1,5 @@
+This example is taken from the book:
+Refactoring: Improving the Design of Existing Code
+www.amazon.com/Refactoring-Improving-Existing-Addison-Wesley-Technology-ebook/dp/B007WTFWJ6
+
+The problem is about movie rental.

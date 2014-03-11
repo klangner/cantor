@@ -20,26 +20,43 @@ import Control.Monad (void)
 -- | Parse java source file
 parseFile :: FilePath -> IO Package
 parseFile fp = do
-    result <- parseFromFile package fp
+    result <- parseFromFile compilationUnit fp
     case result of
-        Left _ -> return $ Package "" [] [] []
-        Right val -> return $ packageFromList val
+        Left _ -> return $ packageNew ""
+        Right val -> return val
+
+    
+-- | Parse java compilation unit
+compilationUnit :: Parser Package
+compilationUnit = do
+    skipComments
+    val <- package
+    --skipComments  
+    --val <- package   
+    return $ packageNew val
 
     
 -- | Parse package declaration    
-package :: Parser [String]
-package = do
-    skipComments
-    _ <- string "package"
+package :: Parser String
+package = packageDecl "package"
+
+
+-- | Parse import declaration    
+-- importDecl :: Parser String
+-- importDecl = packageDecl "import"
+
+    
+-- | Parse package declaration
+-- keyword com.abc.ef
+packageDecl :: String -> Parser String    
+packageDecl keyword = do
+    _ <- string keyword
     skipMany1 space
-    x <- dotSep
+    name <- pkgName
     spaces
     _ <- char ';'
-    return x      
-    
--- | Parse dot separated names    
-dotSep :: Parser [String]    
-dotSep = many1 alphaNum `sepBy` char '.'
+    return name    
+        where pkgName = many1 (alphaNum <|> char '.')
 
 
 -- | skip comments and spaces

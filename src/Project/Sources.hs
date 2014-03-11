@@ -16,7 +16,7 @@ import Data.List (isSuffixOf)
 import Data.Set (fromList, toList)
 import Utils.Folder (isJavaFile, listFilesR)
 import AST.JavaParser (parseFile)
-import AST.Model (packageDirs)
+import AST.Model (packageDir)
 
 
 -- | Find all source root path locations. 
@@ -41,7 +41,7 @@ javaFileClassPath :: FilePath -> IO (Maybe FilePath)
 javaFileClassPath src = do
     pkg <- parseFile src
     let path = takeDirectory src
-    let dir = '/' : head (packageDirs pkg)
+    let dir = '/' : packageDir pkg
     return $ removeSuffix path dir
 
     
