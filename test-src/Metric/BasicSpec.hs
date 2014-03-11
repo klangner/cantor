@@ -7,9 +7,9 @@ import Test.Hspec
 
 spec :: Spec
 spec = 
-  describe "Line of code" $ 
+  describe "calculate LOC metric" $ 
   
-    it "fixtures/java/src1" $ do
+    it "for filtered files in all subfolders" $ do
         loc <- lineOfCode "fixtures/java/src1"
         let java = filter (\(e, _) -> e == ".java") loc 
         head java `shouldBe` (".java", 24)

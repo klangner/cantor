@@ -9,9 +9,9 @@ import qualified Metric.BasicSpec
 
 main :: IO ()
 main = hspec $ do
-  describe "Utils.Folder" Utils.FolderSpec.spec
+  describe "Folder utilities" Utils.FolderSpec.spec
   describe "Project.Maven" Project.MavenSpec.spec
-  describe "ProjectSources" Project.SourcesSpec.spec
-  describe "AST.JavaParser" AST.JavaParserSpec.spec
-  describe "Metric.Basic" Metric.BasicSpec.spec
+  describe "Project sources" Project.SourcesSpec.spec
+  describe "Java AST Parser" AST.JavaParserSpec.spec
+  describe "Basic metrics" Metric.BasicSpec.spec
   
