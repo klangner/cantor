@@ -39,10 +39,12 @@ removeDuplicates = toList . fromList
 -- | Find source root folder from AST    
 javaFileClassPath :: FilePath -> IO (Maybe FilePath)
 javaFileClassPath src = do
-    pkg <- parseFile src
-    let path = takeDirectory src
-    let dir = '/' : packageDir pkg
-    return $ removeSuffix path dir
+    result <- parseFile src
+    case result of
+        Right pkg -> do let path = takeDirectory src
+                        let dir = '/' : packageDir pkg
+                        return $ removeSuffix path dir
+        Left _ -> return Nothing
 
     
 removeSuffix :: String -> String -> Maybe String

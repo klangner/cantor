@@ -18,32 +18,33 @@ import Control.Monad (void)
 
 
 -- | Parse java source file
-parseFile :: FilePath -> IO Package
-parseFile fp = do
-    result <- parseFromFile compilationUnit fp
-    case result of
-        Left _ -> return $ packageNew ""
-        Right val -> return val
+parseFile :: FilePath -> IO (Either ParseError Package)
+parseFile = parseFromFile compilationUnit
 
-    
+
 -- | Parse java compilation unit
 compilationUnit :: Parser Package
 compilationUnit = do
-    skipComments
+    skipWhitespaces
     val <- package
-    --skipComments  
-    --val <- package   
-    return $ packageNew val
+    skipWhitespaces  
+    imps <- importDecls
+    return $ Package val imps []
 
     
 -- | Parse package declaration    
 package :: Parser String
-package = packageDecl "package"
+package = do
+    skipWhitespaces
+    option "" (packageDecl "package")
 
 
 -- | Parse import declaration    
--- importDecl :: Parser String
--- importDecl = packageDecl "import"
+importDecls :: Parser [String]
+importDecls = many $ do 
+    x <- packageDecl "import"
+    skipWhitespaces
+    return x
 
     
 -- | Parse package declaration
@@ -56,12 +57,12 @@ packageDecl keyword = do
     spaces
     _ <- char ';'
     return name    
-        where pkgName = many1 (alphaNum <|> char '.')
+        where pkgName = many1 (alphaNum <|> char '.' <|> char '*')
 
 
 -- | skip comments and spaces
-skipComments :: Parser ()
-skipComments = skipMany $ void comment <|> skipMany1 space
+skipWhitespaces :: Parser ()
+skipWhitespaces = skipMany $ void comment <|> skipMany1 (oneOf " \n\r\t") 
 
 -- | comment
 comment :: Parser String
@@ -80,4 +81,6 @@ singleLineComment :: Parser String
 singleLineComment = do
     _ <- string "//"
     many (noneOf "\n")
+    
+    
     

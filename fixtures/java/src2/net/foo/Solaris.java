@@ -1,7 +1,12 @@
-import abc;
-import com.foo.*;
+package net.foo;
 
-public interface Root {
+/* Imports go here */
+import com.abc;
+// Some comment
+import net.foo.model.*;
+import java.lang.*;
+
+public interface Solaris {
 
 	public IPackage parseFile(String fileName);
 	public IPackage parsePackage(String packagePath);
