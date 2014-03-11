@@ -22,7 +22,7 @@ parseFile :: FilePath -> IO Package
 parseFile fp = do
     result <- parseFromFile package fp
     case result of
-        Left _ -> return $ Package "" [] []
+        Left _ -> return $ Package "" [] [] []
         Right val -> return $ packageFromList val
 
     
