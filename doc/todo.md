@@ -1,5 +1,5 @@
 # To do
 
 ## Metrics
-* Print package dependencies
-* Allow to scan remote projects by HTTP.
+* Refactor parser to use ByteString
+* GUI application which shows package dependencies.

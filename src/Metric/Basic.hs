@@ -26,7 +26,6 @@ lineOfCode src = do
         where f (ext, xs) = do c <- countLines xs
                                return (ext, c)
                                
-
     
 isSourceFile :: FilePath -> Bool
 isSourceFile src = ext `elem` sourceExt

@@ -18,6 +18,7 @@ import Paths_cantor (version)
 import Data.Version (showVersion)
 import Project.Sources (findJavaClassPaths)
 import Project.Model
+import AST.Dependency
 import Metric.Basic
 
 
@@ -69,6 +70,7 @@ printUsageInfo = do
     putStrLn "  commands:"
     putStrLn "    <none> - Print source class paths."
     putStrLn "    loc - Print Line of code metric."
+    putStrLn "    depend - Print package dependency."
     putStrLn (usageInfo "" flags)
     
 
@@ -89,6 +91,7 @@ printPathsAction src = do
 -- | Execute command
 commandAction :: String -> FilePath -> IO ()
 commandAction xs src | xs == "loc" = locCommand src
+                     | xs == "depend" = dependencyCommand src
                      | otherwise = putStrLn "Commands not implemented yet."
                    
 -- | Print LOC metric
@@ -101,3 +104,13 @@ locCommand src = do
               fmt :: Int -> String
               fmt a = if a > 1000 then show (a `div` 1000) ++ "K" else show a
               
+-- | Print package dependencies
+dependencyCommand :: FilePath -> IO ()
+dependencyCommand src = do 
+    Graph vs ns <- packages src
+    putStrLn "Packages : "
+    mapM_ (putStrLn . ("  " ++)) vs          
+    putStrLn "Dependencies : "
+    mapM_ f ns
+        where f (from, to) = putStrLn $ "  " ++ from ++ " -> " ++ to           
+    

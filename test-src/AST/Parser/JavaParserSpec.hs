@@ -1,7 +1,7 @@
-module AST.JavaParserSpec (spec) where
+module AST.Parser.JavaParserSpec (spec) where
 
 import AST.Model
-import AST.JavaParser
+import AST.Parser.JavaParser
 import Text.Parsec.Error
 import Test.Hspec
 
@@ -37,7 +37,7 @@ spec = do
             Right pkg -> do
                 let imports = packageImports pkg
                 length imports `shouldBe` 1
-                head imports `shouldBe` "com.abc.model.Package"
+                head imports `shouldBe` ImportDecl "com.abc.model" "Package"
             Left err -> parseError err
   
     it "for multiple imports in root package" $ do
@@ -46,8 +46,8 @@ spec = do
             Right pkg -> do
                 let imports = packageImports pkg
                 length imports `shouldBe` 2
-                "abc" `elem` imports `shouldBe` True
-                "com.foo.*" `elem` imports `shouldBe` True
+                ImportDecl "" "abc" `elem` imports `shouldBe` True
+                ImportDecl "com.foo" "*" `elem` imports `shouldBe` True
             Left err -> parseError err
   
     it "for imports with comments" $ do
@@ -56,9 +56,9 @@ spec = do
             Right pkg -> do
                 let imports = packageImports pkg
                 length imports `shouldBe` 3
-                "com.abc" `elem` imports `shouldBe` True
-                "net.foo.model.*" `elem` imports `shouldBe` True
-                "java.lang.*" `elem` imports `shouldBe` True
+                ImportDecl "com" "abc" `elem` imports `shouldBe` True
+                ImportDecl "net.foo.model" "*" `elem` imports `shouldBe` True
+                ImportDecl "java.lang" "*" `elem` imports `shouldBe` True
             Left err -> parseError err
 
         

@@ -1,5 +1,5 @@
 {- |
-Module : AST.JavaParser
+Module : AST.Parser.JavaParser
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -9,17 +9,30 @@ Portability : portable
 
 Parse Java sources into AST 
 -}
-module AST.JavaParser ( parseFile 
-                      ) where
+module AST.Parser.JavaParser ( parseFile
+                             , parseProject ) where
 
 import AST.Model
 import Text.ParserCombinators.Parsec
 import Control.Monad (void)
+import Utils.Folder (isJavaFile, listFilesR)
+import Utils.List (splitByLast)
 
 
 -- | Parse java source file
 parseFile :: FilePath -> IO (Either ParseError Package)
 parseFile = parseFromFile compilationUnit
+
+-- | Parse all project directories
+parseProject :: FilePath -> IO [Package] 
+parseProject src = do 
+    files <- listFilesR isJavaFile src
+    pkgs <- mapM parseFile files 
+    let validPkgs = concatMap f pkgs
+    return validPkgs
+        where f :: Either ParseError Package -> [Package] 
+              f (Right a) = [a]
+              f _ = []
 
 
 -- | Parse java compilation unit
@@ -40,11 +53,12 @@ package = do
 
 
 -- | Parse import declaration    
-importDecls :: Parser [String]
+importDecls :: Parser [ImportDecl]
 importDecls = many $ do 
     x <- packageDecl "import"
+    let (pkg, n) = splitByLast "." x
     skipWhitespaces
-    return x
+    return $ ImportDecl pkg n
 
     
 -- | Parse package declaration

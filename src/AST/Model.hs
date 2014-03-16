@@ -11,21 +11,24 @@ AST model
 -}
 module AST.Model ( Class(..)
                  , Function(..)
+                 , ImportDecl (..)
                  , Package(..)
                  , packageDir 
                  , packageNew ) where
 
-
-data Function = Function Name
-
-data Class = Class Name [Function]
-
-data Package = Package { packageName :: String 
-                       , packageImports :: [String]
-                       , packageClasses :: [Class] }
-                       
-         
 type Name = String         
+
+-- | Package
+data Package = Package { packageName :: String 
+                       , packageImports :: [ImportDecl]
+                       , packageClasses :: [Class] } 
+         
+-- | Import declaration with package name and class name         
+data ImportDecl = ImportDecl Name Name deriving (Eq, Show)
+
+data Class = Class Name [Function] deriving (Eq, Show)
+
+data Function = Function Name deriving (Eq, Show)
 
 
 -- | Create new package with given name

@@ -15,7 +15,7 @@ import System.FilePath (takeDirectory)
 import Data.List (isSuffixOf)
 import Data.Set (fromList, toList)
 import Utils.Folder (isJavaFile, listFilesR)
-import AST.JavaParser (parseFile)
+import AST.Parser.JavaParser (parseFile)
 import AST.Model (packageDir)
 
 
