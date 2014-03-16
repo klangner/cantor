@@ -11,5 +11,3 @@ cabal install cantor
 ```
 
 
-## Usage
-Check [documentation](doc/usage.md) for available commands.

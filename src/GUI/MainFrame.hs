@@ -1,5 +1,5 @@
 {- |
-Module : MainFrame
+Module : GUI.MainFrame
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -9,7 +9,7 @@ Portability : portable
 
 The application main window. 
 -}
-module MainFrame( UI
+module GUI.MainFrame( UI
                 , runGuiApp
                 , switchToNoProject
                 , switchToProject
@@ -27,7 +27,7 @@ runGuiApp src = do
     _ <- initGUI
     window <- windowNew
     _ <- onDestroy window mainQuit
-    windowSetDefaultSize window 480 640
+    windowSetDefaultSize window 800 600
     windowSetPosition window WinPosCenter
     if null src then switchToNoProject (UI window)
     else switchToProject (UI window) src
