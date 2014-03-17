@@ -12,7 +12,7 @@ Main GUI application for gathering and presenting information..
 module Main where
 
 import System.Environment
-import GUI.MainFrame
+import GUI.GuiApp
 
 
 main::IO ()

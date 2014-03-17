@@ -2,3 +2,6 @@
 /.settings
 /dist
 /report
+/SourceGraph
+/cabal.sandbox.config
+/.cabal-sandbox
