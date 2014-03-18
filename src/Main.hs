@@ -18,5 +18,5 @@ import GUI.GuiApp
 main::IO ()
 main = do
     args <- getArgs
-    let src = if null args then "" else head args
+    let src = if null args then Nothing else Just $ head args
     runGuiApp src

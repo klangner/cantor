@@ -20,7 +20,8 @@ import Graphics.UI.Gtk
 
 data GUI = GUI { mainWindow :: Window 
                , appMenu :: AppMenu
-               , actionBttons :: Buttons}
+               , actionButtons :: Buttons
+               , diagramCanvas :: DrawingArea}
 
 data AppMenu = AppMenu { projectMenu :: ProjectMenu }
 data ProjectMenu = ProjectMenu { openMenu :: MenuItem
@@ -32,24 +33,26 @@ data Buttons = Buttons { openButton :: ToolButton }
 mainWindowNew :: IO GUI
 mainWindowNew = do
     window <- windowNew
-    (layout, menu, buttons) <- mainLayout
+    (layout, menu, buttons, canvas) <- mainLayout
     set window [ containerChild := layout ]
     windowSetDefaultSize window 800 600
     windowSetPosition window WinPosCenter
-    return $ GUI window menu buttons
+    return $ GUI window menu buttons canvas
     
 -- Main layout    
-mainLayout :: IO (VBox, AppMenu, Buttons)    
+mainLayout :: IO (VBox, AppMenu, Buttons, DrawingArea)    
 mainLayout = do    
     layout <- vBoxNew False 0
     (menu, am) <- mainMenuNew
     (ab, btns) <- actionbarNew
-    containerAdd layout menu
-    containerAdd layout ab
-    button <- buttonNew
-    set button [buttonLabel := "ok"]
-    containerAdd layout button
-    return (layout, am, btns)
+    canvas <- drawingAreaNew
+    set layout [ containerChild := menu
+               , containerChild := ab
+               , containerChild := canvas
+               , boxChildPacking menu := PackNatural
+               , boxChildPacking ab := PackNatural
+               , boxChildPacking canvas := PackGrow]
+    return (layout, am, btns, canvas)
     
 -- Create main menu
 mainMenuNew :: IO (MenuBar, AppMenu)
