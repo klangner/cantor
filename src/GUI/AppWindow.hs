@@ -29,7 +29,8 @@ data ProjectMenu = ProjectMenu { openMenu :: MenuItem
                        
 data Buttons = Buttons { openButton :: ToolButton }
 
--- | Switch to project page 
+
+-- | Create new top loevel window
 mainWindowNew :: IO GUI
 mainWindowNew = do
     window <- windowNew
@@ -84,3 +85,4 @@ actionbarNew = do
     btnOpen <- toolButtonNewFromStock stockOpen
     toolbarInsert tb btnOpen (-1) 
     return (tb, Buttons btnOpen)    
+    

@@ -13,11 +13,10 @@ The application main window.
 module GUI.GuiApp( runGuiApp ) where
 
 import Control.Monad (when)
+import Control.Concurrent
 import Graphics.UI.Gtk
 import GUI.AppWindow
---import Diagrams.Prelude
---import Diagrams.Backend.Cairo
---import Diagrams.Backend.Gtk
+import GUI.WaitDialog
 import Graphics.Rendering.Cairo
 
 
@@ -27,8 +26,8 @@ runGuiApp src = do
     _ <- initGUI
     gui <- mainWindowNew
     connectActions gui
-    _ <- diagramCanvas gui `onExpose` (\_ -> do scanProject src gui; return True)
     widgetShowAll (mainWindow gui)
+    showProjectDependency src gui
     mainGUI
 
 
@@ -45,16 +44,9 @@ connectActions gui = do
     return ()
     
     
--- Scan project
-scanProject :: Maybe FilePath -> GUI -> IO ()
-scanProject (Just src) gui = drawDiagram src (diagramCanvas gui)
-scanProject Nothing _ = return ()    
-
-
 -- | Show open dialog to select project path and then start scanning project
 openProject :: GUI -> IO ()
 openProject gui = do
-    putStrLn "open"
     dlg <- fileChooserDialogNew Nothing 
                                 (Just (mainWindow gui)) 
                                 FileChooserActionSelectFolder 
@@ -62,13 +54,27 @@ openProject gui = do
                                 ,("gtk-cancel" , ResponseCancel)]
     widgetShow dlg
     value <- dialogRun dlg
+    widgetHide dlg    
     when (value == ResponseAccept) $ do
           src <- fileChooserGetFilename dlg
-          scanProject src gui 
-    widgetHide dlg    
-    return ()
+          showProjectDependency src gui 
     
     
+-- Scan project
+showProjectDependency :: Maybe FilePath -> GUI -> IO ()
+showProjectDependency (Just src) gui = runWaitDlg "Scanning project" (processDependencies gui src)
+showProjectDependency Nothing _ = return ()    
+
+
+-- | Process project
+processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
+processDependencies gui src (WaitDlg dlg msgLabel _) = do
+    labelSetText msgLabel src
+    threadDelay 3000000
+    dialogResponse dlg ResponseOk
+    postGUIAsync $ drawDiagram src (diagramCanvas gui)
+
+
 -- Draw diagram    
 drawDiagram :: FilePath -> DrawingArea -> IO ()
 drawDiagram path canvas = do
@@ -76,32 +82,7 @@ drawDiagram path canvas = do
     renderWithDrawable dw $ do 
         setSourceRGBA 1 1 1 1.0
         paint
-        setSourceRGBA 0 1 0 1.0
+        setSourceRGBA 0.2 0.2 0.2 1.0
         moveTo 100.0 100.0
         showText path
 
-{-
--- Show status window during project scanning
-scanningWindow :: GUI -> ((String -> IO ()) -> IO ()) -> IO ()
-scanningWindow gui func = do
-    -- Clear the status text
-    labelSetText (swLabel gui) ""
-    -- Start the operation
-    childThread <- forkIO childTasks
-    windowPresent (statusWin gui)
-        where childTasks =
-              do updateLabel "Starting thread..."
-                 func updateLabel
-                 -- After the child task finishes, enable OK
-                 -- and disable Cancel
-                 enableOK
-                 
-          enableOK = 
-              do widgetSetSensitivity (swCancelBt gui) False
-                 widgetSetSensitivity (swOKBt gui) True
-                 onClicked (swOKBt gui) (widgetHide (statusWin gui))
-                 return ()
-
-          updateLabel text =
-              labelSetText (swLabel gui) text
--}

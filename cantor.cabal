@@ -50,7 +50,7 @@ executable cantor
                     cairo >=0.12.4 && <0.13
                     
 
-  ghc-options:      -Wall
+  ghc-options:      -Wall -threaded
 
 test-suite spec
   type:             exitcode-stdio-1.0
