@@ -13,8 +13,8 @@ The application main window.
 module GUI.GuiApp( runGuiApp ) where
 
 import Control.Monad (when)
-import Control.Concurrent
 import Graphics.UI.Gtk
+import AST.Dependency
 import GUI.AppWindow
 import GUI.WaitDialog
 import Graphics.Rendering.Cairo
@@ -68,11 +68,12 @@ showProjectDependency Nothing _ = return ()
 
 -- | Process project
 processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
-processDependencies gui src (WaitDlg dlg msgLabel _) = do
-    labelSetText msgLabel src
-    threadDelay 3000000
-    dialogResponse dlg ResponseOk
+processDependencies gui src (WaitDlg dlg msgLabel) = do
+    updateLabel src
+    _ <- packages src
+    postGUIAsync $ dialogResponse dlg ResponseOk
     postGUIAsync $ drawDiagram src (diagramCanvas gui)
+        where updateLabel text = postGUIAsync $ labelSetText msgLabel text 
 
 
 -- Draw diagram    

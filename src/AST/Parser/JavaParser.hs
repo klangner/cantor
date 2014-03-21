@@ -25,7 +25,7 @@ parseFile = parseFromFile compilationUnit
 
 -- | Parse all project directories
 parseProject :: FilePath -> IO [Package] 
-parseProject src = do 
+parseProject src = do
     files <- listFilesR isJavaFile src
     pkgs <- mapM parseFile files 
     let validPkgs = concatMap f pkgs
