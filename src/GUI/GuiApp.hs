@@ -17,7 +17,11 @@ import Graphics.UI.Gtk
 import AST.Dependency
 import GUI.AppWindow
 import GUI.WaitDialog
-import Graphics.Rendering.Cairo
+
+import Diagrams.Backend.Gtk
+import Control.Monad.Trans (liftIO)
+import Diagrams.Backend.Cairo
+import Diagrams.Prelude
 
 
 -- | Open GUI window with report data    
@@ -53,9 +57,9 @@ openProject gui = do
                                 [("gtk-open"   , ResponseAccept)
                                 ,("gtk-cancel" , ResponseCancel)]
     widgetShow dlg
-    value <- dialogRun dlg
+    vr <- dialogRun dlg
     widgetHide dlg    
-    when (value == ResponseAccept) $ do
+    when (vr == ResponseAccept) $ do
           src <- fileChooserGetFilename dlg
           showProjectDependency src gui 
     
@@ -69,21 +73,17 @@ showProjectDependency Nothing _ = return ()
 -- | Process project
 processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
 processDependencies gui src (WaitDlg dlg msgLabel) = do
-    updateLabel src
+    postGUIAsync $ labelSetText msgLabel src
     _ <- packages src
-    postGUIAsync $ dialogResponse dlg ResponseOk
     postGUIAsync $ drawDiagram src (diagramCanvas gui)
-        where updateLabel text = postGUIAsync $ labelSetText msgLabel text 
+    postGUIAsync $ dialogResponse dlg ResponseOk
 
 
 -- Draw diagram    
 drawDiagram :: FilePath -> DrawingArea -> IO ()
-drawDiagram path canvas = do
-    dw <- widgetGetDrawWindow canvas
-    renderWithDrawable dw $ do 
-        setSourceRGBA 1 1 1 1.0
-        paint
-        setSourceRGBA 0.2 0.2 0.2 1.0
-        moveTo 100.0 100.0
-        showText path
+drawDiagram _ canvas =
+    liftIO $ defaultRender canvas $ toGtkCoords figure
 
+
+figure :: Diagram Cairo R2
+figure =  unitCircle # scaleX 0.5 # rotateBy (1/6) # scale 50 # fc red

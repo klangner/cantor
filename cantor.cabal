@@ -47,7 +47,8 @@ executable cantor
                     diagrams-lib >=1.0.1 && <1.1,
                     diagrams-cairo >=1.0.1 && <1.1,
                     diagrams-gtk >=1.0 && <1.1,
-                    cairo >=0.12.4 && <0.13
+                    cairo >=0.12.4 && <0.13,
+                    monads-tf >=0.1.0 && <0.2
                     
 
   ghc-options:      -Wall -threaded
