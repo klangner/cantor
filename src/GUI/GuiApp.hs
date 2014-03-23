@@ -31,9 +31,8 @@ runGuiApp src = do
     gui <- mainWindowNew
     connectActions gui
     widgetShowAll (mainWindow gui)
-    showProjectDependency src gui
+    showPackages src gui
     mainGUI
-
 
 -- Connect all actions to the GUI elements
 connectActions :: GUI -> IO ()
@@ -61,29 +60,34 @@ openProject gui = do
     widgetHide dlg    
     when (vr == ResponseAccept) $ do
           src <- fileChooserGetFilename dlg
-          showProjectDependency src gui 
+          showPackages src gui 
     
     
--- Scan project
-showProjectDependency :: Maybe FilePath -> GUI -> IO ()
-showProjectDependency (Just src) gui = runWaitDlg "Scanning project" (processDependencies gui src)
-showProjectDependency Nothing _ = return ()    
+-- Switch application state to show project dependencies
+showPackages :: Maybe FilePath -> GUI -> IO ()
+showPackages (Just src) gui = runWaitDlg "Scanning project" (processDependencies gui src)
+showPackages Nothing _ = return ()    
 
 
 -- | Process project
 processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
 processDependencies gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
-    _ <- packages src
-    postGUIAsync $ drawDiagram src (diagramCanvas gui)
+    pkgs <- packages src
+    let canvas = diagramCanvas gui
+    let d = buildDiagram pkgs
+    _ <- onExpose canvas (exposeCanvas (drawDiagram d canvas))
+    postGUIAsync $ drawDiagram d canvas
     postGUIAsync $ dialogResponse dlg ResponseOk
+        where exposeCanvas fun _ = do _ <- fun; return True
+    
 
 
 -- Draw diagram    
-drawDiagram :: FilePath -> DrawingArea -> IO ()
-drawDiagram _ canvas =
-    liftIO $ defaultRender canvas $ toGtkCoords figure
+drawDiagram :: Diagram Cairo R2 -> DrawingArea -> IO ()
+drawDiagram fig canvas =
+    liftIO $ defaultRender canvas $ toGtkCoords fig
 
 
-figure :: Diagram Cairo R2
-figure =  unitCircle # scaleX 0.5 # rotateBy (1/6) # scale 50 # fc red
+buildDiagram :: Graph -> Diagram Cairo R2
+buildDiagram _ =  unitCircle # scaleX 0.5 # rotateBy (1/6) # scale 50 # fc red
