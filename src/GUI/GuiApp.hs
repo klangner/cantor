@@ -73,9 +73,10 @@ showPackages Nothing _ = return ()
 processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
 processDependencies gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
-    pkgs <- packages src
+    graph <- packageGraph src
     let canvas = diagramCanvas gui
-    let d = buildDiagram pkgs
+    print graph
+    let d = buildDiagram graph
     _ <- onExpose canvas (exposeCanvas (drawDiagram d canvas))
     postGUIAsync $ drawDiagram d canvas
     postGUIAsync $ dialogResponse dlg ResponseOk

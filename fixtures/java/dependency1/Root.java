@@ -1,5 +1,6 @@
 import net.abc.*;
 import net.foo.Solaris;
+import net.foo.alpha.*;
 import java.lang.*;
 
 public interface Root {
