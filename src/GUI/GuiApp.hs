@@ -90,4 +90,4 @@ drawDiagram fig canvas =
 
 
 buildDiagram :: Graph -> Diagram Cairo R2
-buildDiagram _ =  unitCircle # scaleX 0.5 # rotateBy (1/6) # scale 50 # fc red
+buildDiagram _ =  unitCircle # scaleX 0.5 # rotateBy (1/6) # scale 50 # fc red # bg white
