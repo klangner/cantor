@@ -1,6 +1,7 @@
 module AST.DependencySpec (spec) where
 
 import AST.Dependency
+import Utils.Graph
 import Test.Hspec
 
 

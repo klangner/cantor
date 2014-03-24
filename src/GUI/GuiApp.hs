@@ -14,10 +14,10 @@ module GUI.GuiApp( runGuiApp ) where
 
 import Control.Monad (when)
 import Graphics.UI.Gtk
+import Utils.Graph
 import AST.Dependency
 import GUI.AppWindow
 import GUI.WaitDialog
-
 import Diagrams.Backend.Gtk
 import Control.Monad.Trans (liftIO)
 import Diagrams.Backend.Cairo
@@ -75,7 +75,7 @@ processDependencies gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
     graph <- packageGraph src
     let canvas = diagramCanvas gui
-    print graph
+    print $ simplifyNames graph
     let d = buildDiagram graph
     _ <- onExpose canvas (exposeCanvas (drawDiagram d canvas))
     postGUIAsync $ drawDiagram d canvas
@@ -90,5 +90,5 @@ drawDiagram fig canvas =
     liftIO $ defaultRender canvas $ toGtkCoords fig
 
 
-buildDiagram :: Graph -> Diagram Cairo R2
+buildDiagram :: NamesGraph -> Diagram Cairo R2
 buildDiagram _ =  unitCircle # scaleX 0.5 # rotateBy (1/6) # scale 50 # fc red # bg white

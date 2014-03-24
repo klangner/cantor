@@ -9,27 +9,16 @@ Portability : portable
 
 Dependency analysis
 -}
-module AST.Dependency ( Graph(..)
-                      , packageGraph) where
+module AST.Dependency ( packageGraph) where
 
 import Utils.List (unique)
+import Utils.Graph
 import AST.Parser.JavaParser (parseProject)
 import AST.Model (ImportDecl(..), packageName, packageImports)
 
 
--- | Dependency graph 
-data Graph = Graph [Vertice] [Edge] 
-instance Show Graph where
-    show (Graph vs es) = "Vertices: \n" ++ vertices ++ "\nEdges: \n" ++ edges ++ "\n"
-        where vertices = unlines vs
-              edges = concatMap (\(x,y) -> x ++ " -> " ++ y ++ "\n") es
-              
-
-type Vertice = String
-type Edge = (String, String)
-
 -- | Build package dependency graph. 
-packageGraph :: FilePath -> IO Graph 
+packageGraph :: FilePath -> IO NamesGraph 
 packageGraph src = do 
     pkgs <- parseProject src
     let names = unique $ map packageName pkgs
@@ -40,7 +29,7 @@ packageGraph src = do
 
 
 -- | Remove from graph external dependencies
-removeExternalDepends :: Graph -> Graph
+removeExternalDepends :: NamesGraph -> NamesGraph
 removeExternalDepends (Graph vs es) = Graph vs $ filter (\(_,y) -> y `elem` vs) es
 
 
