@@ -19,9 +19,9 @@ import AST.Dependency
 import GUI.AppWindow
 import GUI.WaitDialog
 import Diagrams.Backend.Gtk
-import Control.Monad.Trans (liftIO)
 import Diagrams.Backend.Cairo
 import Diagrams.Prelude
+import Report.Diagram ( buildDiagram )
 
 
 -- | Open GUI window with report data    
@@ -73,9 +73,9 @@ showPackages Nothing _ = return ()
 processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
 processDependencies gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
-    graph <- packageGraph src
+    g <- packageGraph src
+    let graph = simplifyNames g
     let canvas = diagramCanvas gui
-    print $ simplifyNames graph
     let d = buildDiagram graph
     _ <- onExpose canvas (exposeCanvas (drawDiagram d canvas))
     postGUIAsync $ drawDiagram d canvas
@@ -83,12 +83,6 @@ processDependencies gui src (WaitDlg dlg msgLabel) = do
         where exposeCanvas fun _ = do _ <- fun; return True
     
 
-
 -- Draw diagram    
 drawDiagram :: Diagram Cairo R2 -> DrawingArea -> IO ()
-drawDiagram fig canvas =
-    liftIO $ defaultRender canvas $ toGtkCoords fig
-
-
-buildDiagram :: NamesGraph -> Diagram Cairo R2
-buildDiagram _ =  unitCircle # scaleX 0.5 # rotateBy (1/6) # scale 50 # fc red # bg white
+drawDiagram fig canvas = defaultRender canvas fig
