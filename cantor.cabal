@@ -48,7 +48,10 @@ executable cantor
                     diagrams-cairo >=1.0.1 && <1.1,
                     diagrams-gtk >=1.0 && <1.1,
                     cairo >=0.12.4 && <0.13,
-                    monads-tf >=0.1.0 && <0.2
+                    monads-tf >=0.1.0 && <0.2,
+                    force-layout >=0.3.0 && <0.4,
+                    vector-space-points >=0.1.3 && <0.2,
+                    data-default >=0.5.3 && <0.6
                     
 
   ghc-options:      -Wall -threaded

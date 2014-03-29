@@ -21,7 +21,7 @@ import GUI.WaitDialog
 import Diagrams.Backend.Gtk
 import Diagrams.Backend.Cairo
 import Diagrams.Prelude
-import Report.Diagram ( buildDiagram )
+import Visualize.Diagram ( buildDiagram )
 
 
 -- | Open GUI window with report data    
@@ -74,6 +74,7 @@ processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
 processDependencies gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
     g <- packageGraph src
+    -- let graph = Graph ["ala", "ola", "ula"] [("ala", "ola")]
     let graph = simplifyNames g
     let canvas = diagramCanvas gui
     let d = buildDiagram graph
