@@ -1,6 +1,6 @@
-module Project.SourcesSpec (spec) where
+module Project.JavaSpec (spec) where
 
-import Project.Sources
+import Project.Java
 import Test.Hspec
 import System.Directory
 

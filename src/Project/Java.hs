@@ -9,14 +9,25 @@ Portability : portable
 
 Get information about project from sources.
 -}
-module Project.Sources ( findJavaClassPaths )where
+module Project.Java ( findJavaClassPaths
+                    , scanJavaProject )where
 
 import System.FilePath (takeDirectory)
 import Data.List (isSuffixOf)
 import Data.Set (fromList, toList)
 import Utils.Folder (isJavaFile, listFilesR)
-import AST.Parser.JavaParser (parseFile)
-import AST.Model (packageDir)
+import Project.Types
+import Utils.Graph
+import Utils.List (unique)
+import AST.Parser.JavaParser (parseFile, parseProject)
+import AST.Model (ImportDecl(..), packageDir, packageName, packageImports)
+
+
+-- | Scan Java project
+scanJavaProject :: FilePath -> IO Project
+scanJavaProject src = do
+    graph <- packageGraph src
+    return $ Project src graph
 
 
 -- | Find all source root path locations. 
@@ -25,8 +36,8 @@ import AST.Model (packageDir)
 findJavaClassPaths :: FilePath -> IO [FilePath] 
 findJavaClassPaths src = do 
     files <- listFilesR isJavaFile src
-    paths <- mapM javaFileClassPath files
-    let validPaths = concatMap f paths
+    xs <- mapM javaFileClassPath files
+    let validPaths = concatMap f xs
     return $ removeDuplicates validPaths
         where f :: Maybe FilePath -> [FilePath] 
               f (Just a) = [a]
@@ -52,3 +63,19 @@ removeSuffix xs sufix =
     if sufix `isSuffixOf` xs then Just (take len xs)
     else Nothing
         where len = length xs - length sufix
+
+-- | Create packages graph        
+packageGraph :: FilePath -> IO NamesGraph 
+packageGraph src = do 
+    pkgs <- parseProject src
+    let names = unique $ map packageName pkgs
+    let depends = unique $ concatMap f pkgs
+    let graph = removeExternalDepends $ Graph names depends 
+    return graph
+        where f p = map (\(ImportDecl x _) -> (packageName p, x)) (packageImports p)
+
+
+-- | Remove from graph external dependencies
+removeExternalDepends :: NamesGraph -> NamesGraph
+removeExternalDepends (Graph vs es) = Graph vs $ filter (\(_,y) -> y `elem` vs) es
+        

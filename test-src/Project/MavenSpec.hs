@@ -1,6 +1,6 @@
 module Project.MavenSpec (spec) where
 
-import Project.Model
+import Project.Types
 import Project.Maven
 import Test.Hspec
 --import Test.QuickCheck
@@ -20,6 +20,6 @@ spec =
         getProjectName prj `shouldBe` "error"
         
         
-getProjectName :: Maybe Project -> String
-getProjectName (Just (Project src md)) = name md
+getProjectName :: Maybe Metadata -> String
+getProjectName (Just md) = name md
 getProjectName _ = "error"         

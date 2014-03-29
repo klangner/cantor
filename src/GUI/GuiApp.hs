@@ -15,13 +15,14 @@ module GUI.GuiApp( runGuiApp ) where
 import Control.Monad (when)
 import Graphics.UI.Gtk
 import Utils.Graph
-import AST.Dependency
 import GUI.AppWindow
 import GUI.WaitDialog
 import Diagrams.Backend.Gtk
 import Diagrams.Backend.Cairo
 import Diagrams.Prelude
 import Visualize.Diagram ( buildDiagram )
+import Project.Types
+import Project.Java
 import Metric.Basic
 
 
@@ -74,8 +75,8 @@ showPackages Nothing _ = return ()
 processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
 processDependencies gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
-    g <- packageGraph src
-    let graph = simplifyNames g
+    prj <- scanJavaProject src
+    let graph = simplifyNames (projectGraph prj)
     let canvas = diagramCanvas gui
     let d = buildDiagram graph
     _ <- onExpose canvas (exposeCanvas (drawDiagram d canvas))
@@ -93,6 +94,7 @@ drawDiagram fig canvas = defaultRender canvas fig
 -- Print some metrics to the console
 printMetrics :: NamesGraph -> IO ()
 printMetrics (Graph _ es) = do
+    --mapM_ print es
     let loops = findLoops es
     putStrLn $ "Found " ++ show (length loops) ++ " loops."
     mapM_ print (take 10 loops)

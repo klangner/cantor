@@ -9,7 +9,8 @@ Portability : portable
 
 Get information about project from Maven POM file.
 -}
-module Project.Maven ( loadProject
+module Project.Maven ( Metadata(..)
+                     , loadProject
                      )where
 
 import Text.XML.HXT.Core
@@ -17,21 +18,21 @@ import Data.Tree.NTree.TypeDefs
 import Text.XML.HXT.XPath.XPathEval
 import System.FilePath (normalise)
 import System.Directory (doesFileExist)
-import Project.Model
 
+
+data Metadata = Metadata { groupId :: String
+                         , projectId :: String
+                         , name :: String
+                         , description :: String
+                         } deriving (Show)
 
 -- | Load project information from POM file.
-loadProject :: FilePath -> IO (Maybe Project) 
+loadProject :: FilePath -> IO (Maybe Metadata) 
 loadProject src = do 
     let pomPath = normalise (src ++ "/pom.xml")
     fileExists <- doesFileExist pomPath
     xs <- if fileExists then runX (readDocument [] pomPath) else return []
-    return $ if not (null xs) then Just (createFromPom src (head xs)) else Nothing
-
-
--- | Create Project data from POM file
-createFromPom :: FilePath -> XmlTree -> Project
-createFromPom src xt = Project src (metadataFromPom xt)
+    return $ if not (null xs) then Just (metadataFromPom (head xs)) else Nothing
 
 
 -- | Read metadata from pom
