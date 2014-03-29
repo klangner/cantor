@@ -1,5 +1,6 @@
 # To do
 
-## Metrics
-* Refactor parser to use ByteString
-* GUI application which shows package dependencies.
+## Diagrams
+* Implement layout for diagrams: 
+** http://en.wikipedia.org/wiki/Layered_graph_drawing
+** http://www.graphviz.org
