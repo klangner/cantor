@@ -19,7 +19,7 @@ import Utils.Folder (isJavaFile, listFilesR)
 import Project.Types
 import Utils.Graph
 import Utils.List (unique)
-import AST.Parser.JavaParser (parseFile, parseProject)
+import AST.JavaParser (parseFile, parseProject)
 import AST.Model (ImportDecl(..), packageDir, packageName, packageImports)
 
 

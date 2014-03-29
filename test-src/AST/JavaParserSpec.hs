@@ -1,7 +1,7 @@
-module AST.Parser.JavaParserSpec (spec) where
+module AST.JavaParserSpec (spec) where
 
 import AST.Model
-import AST.Parser.JavaParser
+import AST.JavaParser
 import Text.Parsec.Error
 import Test.Hspec
 

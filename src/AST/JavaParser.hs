@@ -1,5 +1,5 @@
 {- |
-Module : AST.Parser.JavaParser
+Module : AST.JavaParser
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -9,8 +9,8 @@ Portability : portable
 
 Parse Java sources into AST 
 -}
-module AST.Parser.JavaParser ( parseFile
-                             , parseProject ) where
+module AST.JavaParser ( parseFile
+                      , parseProject ) where
 
 import AST.Model
 import Text.ParserCombinators.Parsec
