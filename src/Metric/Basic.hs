@@ -9,12 +9,15 @@ Portability : portable
 
 Basic software metrics.
 -}
-module Metric.Basic ( lineOfCode )where
+module Metric.Basic ( findLoops
+                    , lineOfCode )where
 
+import Data.List (nub)
 import System.FilePath (takeExtension)
 import qualified Data.ByteString as Str
 import qualified Data.ByteString.Char8 as BS8
 import Utils.Folder (listFilesR)
+import Utils.Graph(paths)
 
 
 -- | Count number of lines in all files in given directory 
@@ -50,3 +53,10 @@ countFileLines path = do
     contents <- Str.readFile path
     return $ length (BS8.lines contents)
     
+-- | Find all dependency loops
+findLoops :: Eq a => [(a, a)] -> [[a]]
+findLoops [] = []    
+findLoops (x:xs) = filter (\z -> last z == a) allPaths ++ findLoops xs
+    where (a,_) = x
+          allPaths = filter hasUnique $ paths a (x:xs)
+          hasUnique ys = length ys == length (nub ys) 

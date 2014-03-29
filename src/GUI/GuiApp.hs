@@ -22,6 +22,7 @@ import Diagrams.Backend.Gtk
 import Diagrams.Backend.Cairo
 import Diagrams.Prelude
 import Visualize.Diagram ( buildDiagram )
+import Metric.Basic
 
 
 -- | Open GUI window with report data    
@@ -74,16 +75,26 @@ processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
 processDependencies gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
     g <- packageGraph src
-    -- let graph = Graph ["ala", "ola", "ula"] [("ala", "ola")]
     let graph = simplifyNames g
     let canvas = diagramCanvas gui
     let d = buildDiagram graph
     _ <- onExpose canvas (exposeCanvas (drawDiagram d canvas))
     postGUIAsync $ drawDiagram d canvas
     postGUIAsync $ dialogResponse dlg ResponseOk
+    printMetrics graph
         where exposeCanvas fun _ = do _ <- fun; return True
     
 
 -- Draw diagram    
 drawDiagram :: Diagram Cairo R2 -> DrawingArea -> IO ()
 drawDiagram fig canvas = defaultRender canvas fig
+
+
+-- Print some metrics to the console
+printMetrics :: NamesGraph -> IO ()
+printMetrics (Graph _ es) = do
+    let loops = findLoops es
+    putStrLn $ "Found " ++ show (length loops) ++ " loops."
+    mapM_ print (take 10 loops)
+    
+    

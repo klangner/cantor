@@ -11,6 +11,7 @@ Dependency analysis
 -}
 module Utils.Graph ( Graph(..) 
                    , NamesGraph 
+                   , paths
                    , simplifyNames ) where
 
 import Control.Arrow
@@ -35,4 +36,18 @@ simplifyNames (Graph vs es) = Graph vs' es'
     where prefix = commonPrefix vs
           n = length prefix
           vs' = map (drop n) vs
-          es' = map (drop n Control.Arrow.*** drop n) es
+          es' = map (drop n *** drop n) es
+          
+          
+-- Find all paths from given starting element
+paths :: Eq a => a -> [(a,a)] -> [[a]]
+paths _ [] = []
+paths x ys = concatMap f (hasSource x ys)
+    where rest e = filter (e /=) ys
+          f (_,b) = map (\z -> b : z) ([]:subPaths b)
+          subPaths b2 = paths b2 (rest (x,b2))
+
+-- | Filter only those edges which has given source
+hasSource :: Eq a => a -> [(a,a)] -> [(a,a)]
+hasSource x = filter (\(a, _) -> a == x)    
+              
