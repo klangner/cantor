@@ -23,11 +23,14 @@ import AST.JavaParser (parseFile, parseProject)
 import AST.Model (ImportDecl(..), packageDir, packageName, packageImports)
 
 
+type Dependencies = [(String, String)]
+type Package = String
+
 -- | Scan Java project
 scanJavaProject :: FilePath -> IO Project
 scanJavaProject src = do
-    graph <- packageGraph src
-    return $ Project src graph
+    (pkg, depends) <- packageGraph src
+    return $ Project src pkg (Graph pkg depends)
 
 
 -- | Find all source root path locations. 
@@ -65,17 +68,17 @@ removeSuffix xs sufix =
         where len = length xs - length sufix
 
 -- | Create packages graph        
-packageGraph :: FilePath -> IO NamesGraph 
+packageGraph :: FilePath -> IO ([Package], Dependencies) 
 packageGraph src = do 
     pkgs <- parseProject src
     let names = unique $ map packageName pkgs
     let depends = unique $ concatMap f pkgs
-    let graph = removeExternalDepends $ Graph names depends 
-    return graph
+    let depends2 = removeExternalDepends names depends 
+    return (names, depends2)
         where f p = map (\(ImportDecl x _) -> (packageName p, x)) (packageImports p)
 
 
 -- | Remove from graph external dependencies
-removeExternalDepends :: NamesGraph -> NamesGraph
-removeExternalDepends (Graph vs es) = Graph vs $ filter (\(_,y) -> y `elem` vs) es
+removeExternalDepends :: [Package] -> Dependencies -> Dependencies
+removeExternalDepends vs = filter (\ (_, y) -> y `elem` vs)
         

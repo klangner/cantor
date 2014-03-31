@@ -67,13 +67,13 @@ openProject gui = do
     
 -- Switch application state to show project dependencies
 showPackages :: Maybe FilePath -> GUI -> IO ()
-showPackages (Just src) gui = runWaitDlg "Scanning project" (processDependencies gui src)
+showPackages (Just src) gui = runWaitDlg "Scanning project" (processProject gui src)
 showPackages Nothing _ = return ()    
 
 
 -- | Process project
-processDependencies :: GUI -> FilePath -> WaitDlg -> IO ()
-processDependencies gui src (WaitDlg dlg msgLabel) = do
+processProject :: GUI -> FilePath -> WaitDlg -> IO ()
+processProject gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
     prj <- scanJavaProject src
     let graph = simplifyNames (projectGraph prj)

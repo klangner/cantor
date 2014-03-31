@@ -15,5 +15,6 @@ import Utils.Graph
 
 -- | Project data
 data Project = Project { projectPath :: FilePath
+                       , projectPackages :: [String]
                        , projectGraph :: NamesGraph } deriving (Show) 
 
