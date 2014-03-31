@@ -6,8 +6,9 @@ License : BSD3
 Helper module with functions operating on lists
 -}
 module Utils.List ( commonPrefix 
-                  , takePrefix
+                  , simplifyNames
                   , splitByLast 
+                  , takePrefix
                   , unique )where
 
 import Data.Set (fromList, toList)
@@ -38,3 +39,10 @@ takePrefix :: Eq a => [a] -> [a] -> [a]
 takePrefix (x:xs) (y:ys)
     | x == y    = x : takePrefix xs ys
 takePrefix _ _ = []
+
+
+-- | Simplify names by removing common prefix
+simplifyNames :: [String] -> [String]
+simplifyNames xs = map (drop n) xs 
+    where prefix = commonPrefix xs
+          n = length prefix

@@ -17,7 +17,6 @@ import Data.List (isSuffixOf)
 import Data.Set (fromList, toList)
 import Utils.Folder (isJavaFile, listFilesR)
 import Project.Types
-import Utils.Graph
 import Utils.List (unique)
 import AST.JavaParser (parseFile, parseProject)
 import AST.Model (ImportDecl(..), packageDir, packageName, packageImports)
@@ -29,8 +28,8 @@ type Package = String
 -- | Scan Java project
 scanJavaProject :: FilePath -> IO Project
 scanJavaProject src = do
-    (pkg, depends) <- packageGraph src
-    return $ Project src pkg (Graph pkg depends)
+    (pkg, depends) <- packageGraph src 
+    return $ Project src (buildPackageGraph pkg depends)
 
 
 -- | Find all source root path locations. 

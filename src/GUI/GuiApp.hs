@@ -14,7 +14,6 @@ module GUI.GuiApp( runGuiApp ) where
 
 import Control.Monad (when)
 import Graphics.UI.Gtk
-import Utils.Graph
 import GUI.AppWindow
 import GUI.WaitDialog
 import Diagrams.Backend.Gtk
@@ -23,7 +22,6 @@ import Diagrams.Prelude
 import Visualize.Diagram ( buildDiagram )
 import Project.Types
 import Project.Java
-import Metric.Basic
 
 
 -- | Open GUI window with report data    
@@ -76,13 +74,12 @@ processProject :: GUI -> FilePath -> WaitDlg -> IO ()
 processProject gui src (WaitDlg dlg msgLabel) = do
     postGUIAsync $ labelSetText msgLabel src
     prj <- scanJavaProject src
-    let graph = simplifyNames (projectGraph prj)
-    let canvas = diagramCanvas gui
-    let d = buildDiagram graph
+    let canvas = diagramCanvas gui 
+    let d = buildDiagram (projectPackages prj)
     _ <- onExpose canvas (exposeCanvas (drawDiagram d canvas))
     postGUIAsync $ drawDiagram d canvas
     postGUIAsync $ dialogResponse dlg ResponseOk
-    printMetrics graph
+    printMetrics (projectPackages prj)
         where exposeCanvas fun _ = do _ <- fun; return True
     
 
@@ -92,11 +89,11 @@ drawDiagram fig canvas = defaultRender canvas fig
 
 
 -- Print some metrics to the console
-printMetrics :: NamesGraph -> IO ()
-printMetrics (Graph _ es) = do
-    --mapM_ print es
-    let loops = findLoops es
-    putStrLn $ "Found " ++ show (length loops) ++ " loops."
-    mapM_ print (take 10 loops)
+printMetrics :: DependencyGraph -> IO ()
+printMetrics (PackageGraph pkgs _) = 
+    mapM_ print pkgs
+    --let loops = findLoops es
+    --putStrLn $ "Found " ++ show (length loops) ++ " loops."
+    --mapM_ print (take 10 loops)
     
     

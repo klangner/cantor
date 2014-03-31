@@ -19,18 +19,21 @@ import Physics.ForceLayout
 import qualified Data.Map as M
 import Data.AffineSpace.Point
 import Data.Default (def)
-import Utils.Graph
+import Project.Types
+import Utils.List (simplifyNames)
+
 
 
 -- | Create diagram form Graph
-buildDiagram :: NamesGraph -> Diagram B R2
-buildDiagram (Graph vs es) = vertices # applyAll [connectOutside' arrowOpts x y | (x,y) <- es]  
-    where vertices = position (zip (layoutDiagram (Graph vs es)) (map packageShape vs))
+buildDiagram :: DependencyGraph -> Diagram B R2
+buildDiagram (PackageGraph pkgs deps) = vertices # applyAll [connectOutside' arrowOpts x y | (x,y) <- deps]  
+    where vertices = position (zip (layoutDiagram pkgs deps) (map packageShape pkgs2))
+          pkgs2 = zip (simplifyNames pkgs) [1..]
 
 
 -- Package widget contains package name with some metadata
-packageShape :: String -> Diagram B R2
-packageShape name = text name # scale 0.1 # fc black <> roundedRect 0.8 0.6 0.1 # fc yellow # named name
+packageShape :: (String, Int) -> Diagram B R2
+packageShape (name, idx) = text name # scale 0.1 # fc black <> roundedRect 0.8 0.6 0.1 # fc yellow # named idx
 
 
 -- Default arrow options
@@ -41,9 +44,9 @@ arrowOpts = with & headGap  .~ 0.07
 
 
 -- Create diagram layout
-layoutDiagram :: NamesGraph -> [P2]
-layoutDiagram graph = map convert $ M.elems (_particles e')
-    where e = ensemble graph 
+layoutDiagram :: [String] -> [(Int,Int)] -> [P2]
+layoutDiagram pkgs deps = map convert $ M.elems (_particles e')
+    where e = ensemble pkgs deps 
           e' = forceLayout layoutOptions e
           convert (Particle point _ _) = p2 (unPoint point) 
           
@@ -53,20 +56,14 @@ layoutOptions = def & damping .~ 0.8 & energyLimit .~ Just 0.001 & stepLimit .~ 
 
                  
 -- Create ensemble to feed force layout algorithm                 
-ensemble :: NamesGraph -> Ensemble (Double, Double)
-ensemble (Graph vs es) = Ensemble [ (edges,    hookeForce 0.05 4)
-                                 , (allPairs, coulombForce 0.01)
-                                 ]
-                                 particleMap
-   where n = length vs
-         edges       = edgeIds (Graph vs es)
+ensemble :: [String] -> [(Int,Int)] -> Ensemble (Double, Double)
+ensemble pkgs deps = Ensemble [ (deps,    hookeForce 0.05 4)
+                              , (allPairs, coulombForce 0.01)
+                              ]
+                              particleMap
+   where n = length pkgs
          allPairs    = [(x,y) | x <- [1..n], y <- [x+1..n]]
          particleMap = M.fromList . zip [1..n]
                      . map (initParticle . P)
                      $ map (sin &&& cos) [1.0 ..]
-                     
--- Convert edges with names into edges with Ids
-edgeIds :: NamesGraph -> [(Int, Int)]
-edgeIds (Graph vs es) = map ((M.!) ids *** (M.!) ids) es
-    where ids = M.fromList (zip vs [1..]) 
                      

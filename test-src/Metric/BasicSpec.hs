@@ -6,14 +6,14 @@ import Test.Hspec
 
 
 spec :: Spec
-spec = do
+spec = 
   describe "calculate LOC metric" $ 
   
     it "for filtered files in all subfolders" $ do
         loc <- lineOfCode "fixtures/java/src1"
         let java = filter (\(e, _) -> e == ".java") loc 
         head java `shouldBe` (".java", 24)
-
+{-
   describe "counting loops" $ do
   
     it "no loops for empty list" $ do
@@ -36,3 +36,4 @@ spec = do
     it "connected loops" $ do
         let loops = findLoops [(1,2), (3,4), (2,3), (3,1), (4,3)]
         length loops `shouldBe` 2
+-}
