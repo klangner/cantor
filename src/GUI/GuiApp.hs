@@ -13,8 +13,6 @@ The application main window.
 module GUI.GuiApp( runGuiApp ) where
 
 import Control.Monad (when)
-import Data.Graph
-import Data.Tree
 import Data.List
 import Graphics.UI.Gtk
 import GUI.AppWindow
@@ -93,15 +91,8 @@ drawDiagram fig canvas = defaultRender canvas fig
 
 -- Print some metrics to the console
 printMetrics :: DependencyGraph -> IO ()
-printMetrics (PackageGraph pkgs es) = do
-    let loops = filter (not . null . subForest ) (scc graph)
-    let groups = map mkPkgGroup loops
+printMetrics deps = do
+    let groups = scp deps
     let count = sum $ map length groups
     putStrLn $ "There are " ++ show count ++ " strongly connected packages."
     mapM_ (putStrLn . intercalate "\n") groups
-        where graph = buildG (0, length pkgs - 1) es
-              mkPkgGroup node = nodeName node : concatMap mkPkgGroup (subForest node)
-              nodeName node = pkgs !! rootLabel node
-              
-    
-    
