@@ -13,6 +13,9 @@ The application main window.
 module GUI.GuiApp( runGuiApp ) where
 
 import Control.Monad (when)
+import Data.Graph
+import Data.Tree
+import Data.List
 import Graphics.UI.Gtk
 import GUI.AppWindow
 import GUI.WaitDialog
@@ -90,10 +93,14 @@ drawDiagram fig canvas = defaultRender canvas fig
 
 -- Print some metrics to the console
 printMetrics :: DependencyGraph -> IO ()
-printMetrics (PackageGraph pkgs _) = 
-    mapM_ print pkgs
-    --let loops = findLoops es
-    --putStrLn $ "Found " ++ show (length loops) ++ " loops."
-    --mapM_ print (take 10 loops)
+printMetrics (PackageGraph pkgs es) = do
+    let loops = filter (not . null . subForest ) (scc graph)
+    print "Strongly connected components: "
+    let groups = map mkPkgGroup loops
+    mapM_ (print . intercalate "->") groups
+        where graph = buildG (0, length pkgs - 1) es
+              mkPkgGroup node = nodeName node : concatMap mkPkgGroup (subForest node)
+              nodeName node = pkgs !! rootLabel node
+              
     
     

@@ -28,7 +28,7 @@ import Utils.List (simplifyNames)
 buildDiagram :: DependencyGraph -> Diagram B R2
 buildDiagram (PackageGraph pkgs deps) = vertices # applyAll [connectOutside' arrowOpts x y | (x,y) <- deps]  
     where vertices = position (zip (layoutDiagram pkgs deps) (map packageShape pkgs2))
-          pkgs2 = zip (simplifyNames pkgs) [1..]
+          pkgs2 = zip (simplifyNames pkgs) [0..]
 
 
 -- Package widget contains package name with some metadata

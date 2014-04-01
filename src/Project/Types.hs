@@ -29,6 +29,6 @@ data Project = Project { projectPath :: FilePath
 -- | Build dependency graph from node and edges given as names
 buildPackageGraph :: [String] -> [(String, String)] -> DependencyGraph
 buildPackageGraph ns es = PackageGraph ns $ map ((M.!) ids *** (M.!) ids) es
-    where ids = M.fromList (zip ns [1..]) 
+    where ids = M.fromList (zip ns [0..]) 
     
     
