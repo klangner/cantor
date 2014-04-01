@@ -95,9 +95,10 @@ drawDiagram fig canvas = defaultRender canvas fig
 printMetrics :: DependencyGraph -> IO ()
 printMetrics (PackageGraph pkgs es) = do
     let loops = filter (not . null . subForest ) (scc graph)
-    print "Strongly connected components: "
     let groups = map mkPkgGroup loops
-    mapM_ (print . intercalate "->") groups
+    let count = sum $ map length groups
+    putStrLn $ "There are " ++ show count ++ " strongly connected packages."
+    mapM_ (putStrLn . intercalate "\n") groups
         where graph = buildG (0, length pkgs - 1) es
               mkPkgGroup node = nodeName node : concatMap mkPkgGroup (subForest node)
               nodeName node = pkgs !! rootLabel node
