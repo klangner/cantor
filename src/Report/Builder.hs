@@ -11,9 +11,9 @@ Main GUI application for gathering and presenting information..
 -}
 module Report.Builder (buildReport) where
 
+import Report.Html
 import Project.Core
 
-type Html = String
     
 -- | Build projec report
 buildReport :: FilePath -> Project -> IO ()
@@ -24,14 +24,15 @@ buildReport path prj = do
         
 
 indexHtml :: String -> Html
-indexHtml name =
-    "<html><body>" ++  
-    "<h1>" ++ name ++ "</h1>" ++
-    summary ++
-    "</body></html>"
+indexHtml name = html $ body $ 
+    h1 name ++
+    summary
     
     
 summary :: Html
-summary = "<h2>Summary</h2>" ++
-          "<table>" ++
-          "</table>"              
+summary = h2 "Summary" ++
+          table [] [ ["Project path", "???"]
+                     , ["Lines of code", "???"]
+                     , ["Packages coutn", "???"]
+                     , ["Recursive packages", "???"]
+                     , ["Strongly connected packages", "???"]]
