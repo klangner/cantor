@@ -4,7 +4,7 @@ cabal-version:  >= 1.10
 build-type:     Simple
 author:         Krzysztof Langner
 maintainer:     klangner@gmail.com
-synopsis:       Analiza Java source code
+synopsis:       Application for analysis of java source code
 homepage:       https://github.com/klangner/cantor
 Bug-reports:    https://github.com/klangner/cantor/issues
 stability:      Unstable interface, incomplete features.

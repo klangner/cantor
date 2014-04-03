@@ -1,6 +1,6 @@
 module Project.MavenSpec (spec) where
 
-import Project.Types
+import Project.Core
 import Project.Maven
 import Test.Hspec
 --import Test.QuickCheck

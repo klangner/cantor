@@ -21,7 +21,7 @@ import Diagrams.Backend.Gtk
 import Diagrams.Backend.Cairo
 import Diagrams.Prelude
 import Visualize.Diagram ( buildDiagram )
-import Project.Types
+import Project.Core
 import Project.Java
 
 

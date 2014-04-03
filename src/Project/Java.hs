@@ -16,7 +16,7 @@ import System.FilePath (takeDirectory)
 import Data.List (isSuffixOf)
 import Data.Set (fromList, toList)
 import Utils.Folder (isJavaFile, listFilesR)
-import Project.Types
+import Project.Core
 import Utils.List (unique)
 import AST.JavaParser (parseFile, parseProject)
 import AST.Model (ImportDecl(..), packageDir, packageName, packageImports)

@@ -1,5 +1,5 @@
 {- |
-Module : Project.Types
+Module : Project.Core
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -9,15 +9,17 @@ Portability : portable
 
 Project model
 -}
-module Project.Types ( Dependency
+module Project.Core ( Dependency
                      , DependencyGraph(..)
                      , Project(..) 
                      , buildPackageGraph 
+                     , guessProjectName
                      , scp ) where
 
 import Control.Arrow
 import Data.Graph
 import Data.Tree
+import System.FilePath
 import qualified Data.Map as M
 
 
@@ -41,3 +43,12 @@ scp (PackageGraph pkgs graph) = map mkPkgGroup groups
         where groups = filter (not . null . subForest ) (scc graph)
               mkPkgGroup node = nodeName node : concatMap mkPkgGroup (subForest node)
               nodeName node = pkgs !! rootLabel node
+
+-- | Try to guess project name from project path
+--   Currently returns folder name which contains subfolder "src"
+guessProjectName :: FilePath -> String
+guessProjectName fp = case splitDirectories fp of
+    [] -> fp
+    xs -> last $ takeWhile ("src" /=) xs
+    
+                  

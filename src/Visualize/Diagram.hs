@@ -21,7 +21,7 @@ import Physics.ForceLayout
 import qualified Data.Map as M
 import Data.AffineSpace.Point
 import Data.Default (def)
-import Project.Types
+import Project.Core
 import Utils.List (simplifyNames)
 
 

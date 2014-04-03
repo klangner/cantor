@@ -12,14 +12,16 @@ Main GUI application for gathering and presenting information..
 module Main where
 
 import System.Environment
+import System.Directory (createDirectoryIfMissing)
 import System.Console.GetOpt
 import System.Exit
 import Data.List
 import Paths_cantor (version)
 import Data.Version (showVersion)
-import Project.Types
+import Project.Core
 import Project.Java
 import Metric.Basic (lineOfCode)
+import Report.Builder (buildReport)
 
 
 data Flag = Version -- -v
@@ -31,7 +33,7 @@ main::IO ()
 main = do
     argv <- getArgs
     case getOpt Permute flags argv of
-        ([], [src], []) -> analyzeProjectAction src
+        ([], [src], []) -> analyzeProject src
         ([Version], _, []) -> printVersion
         ([Help], _, []) -> printUsageInfo
         (_, _, []) -> printUsageInfo
@@ -70,13 +72,25 @@ printUsageInfo = do
     
 
 -- | Analize Java project and create report
-analyzeProjectAction :: FilePath -> IO ()
-analyzeProjectAction src = do
+analyzeProject :: FilePath -> IO ()
+analyzeProject src = do
+    reportFolder <- createReportFolder
+    putStrLn "Scanning project..." 
     prj <- scanJavaProject src
+    putStrLn "Build metrics"
     packageMetrics (projectPackages prj)
+    putStrLn "Counting lines of code" 
     locMetric src
+    buildReport reportFolder prj
 
 
+-- | Create folder for report data
+createReportFolder :: IO FilePath
+createReportFolder = do
+    createDirectoryIfMissing False path
+    return path
+    where path = "./cantor-report"
+    
 -- Print metrics
 packageMetrics :: DependencyGraph -> IO ()
 packageMetrics deps = do
