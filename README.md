@@ -13,4 +13,10 @@ The library can be installed from [Hackage](http://hackage.haskell.org/package/c
 cabal install cantor
 ```
 
+## Usage
 
+```sh
+cantor <project_source_path>
+```
+
+The report for this project will be generated in folder cantor-report.
