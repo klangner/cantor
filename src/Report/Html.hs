@@ -50,3 +50,12 @@ th = node "th"
 
 td :: String -> Html
 td = node "td"
+
+ul :: [String] -> Html
+ul xs = node "ul" $ concatMap li xs
+
+ol :: [String] -> Html
+ol xs = node "ol" $ concatMap li xs
+
+li :: String -> Html
+li = node "li"
