@@ -11,8 +11,8 @@ spec =
   
     it "for filtered files in all subfolders" $ do
         loc <- lineOfCode "fixtures/java/src1"
-        let java = filter (\(e, _) -> e == ".java") loc 
-        head java `shouldBe` (".java", 24)
+        let java = filter (\(e, _) -> e == "Java") loc 
+        head java `shouldBe` ("Java", 24)
 {-
   describe "counting loops" $ do
   
