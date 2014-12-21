@@ -6,4 +6,5 @@
 /cabal.sandbox.config
 /.cabal-sandbox
 /out
+/cantor.iml
 /.idea
