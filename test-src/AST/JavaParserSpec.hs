@@ -37,7 +37,7 @@ spec = do
             Right pkg -> do
                 let imports = packageImports pkg
                 length imports `shouldBe` 1
-                head imports `shouldBe` ImportDecl "com.abc.model" "Package"
+                head imports `shouldBe` mkImportDecl "com.abc.model.Package"
             Left err -> parseError err
   
     it "for multiple imports in root package" $ do
@@ -46,8 +46,8 @@ spec = do
             Right pkg -> do
                 let imports = packageImports pkg
                 length imports `shouldBe` 2
-                ImportDecl "" "abc" `elem` imports `shouldBe` True
-                ImportDecl "com.foo" "*" `elem` imports `shouldBe` True
+                mkImportDecl "abc" `elem` imports `shouldBe` True
+                mkImportDecl "com.foo.*" `elem` imports `shouldBe` True
             Left err -> parseError err
   
     it "for imports with comments" $ do
@@ -56,9 +56,9 @@ spec = do
             Right pkg -> do
                 let imports = packageImports pkg
                 length imports `shouldBe` 3
-                ImportDecl "com" "abc" `elem` imports `shouldBe` True
-                ImportDecl "net.foo.model" "*" `elem` imports `shouldBe` True
-                ImportDecl "java.lang" "*" `elem` imports `shouldBe` True
+                mkImportDecl "com.abc" `elem` imports `shouldBe` True
+                mkImportDecl "net.foo.model.*" `elem` imports `shouldBe` True
+                mkImportDecl "java.lang.*" `elem` imports `shouldBe` True
             Left err -> parseError err
 
         

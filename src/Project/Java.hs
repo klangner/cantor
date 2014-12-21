@@ -19,11 +19,11 @@ import Utils.Folder (isJavaFile, listFilesR)
 import Project.Core
 import Utils.List (unique)
 import AST.JavaParser (parseFile, parseProject)
-import AST.Model (ImportDecl(..), packageDir, packageName, packageImports)
+import AST.Model
 
 
 type Dependencies = [(String, String)]
-type Package = String
+type PackageName = String
 
 -- | Scan Java project
 scanJavaProject :: FilePath -> IO Project
@@ -67,17 +67,17 @@ removeSuffix xs sufix =
         where len = length xs - length sufix
 
 -- | Create packages graph        
-packageGraph :: FilePath -> IO ([Package], Dependencies) 
+packageGraph :: FilePath -> IO ([PackageName], Dependencies)
 packageGraph src = do 
     pkgs <- parseProject src
     let names = unique $ map packageName pkgs
     let depends = unique $ concatMap f pkgs
     let depends2 = removeExternalDepends names depends 
     return (names, depends2)
-        where f p = map (\(ImportDecl x _) -> (packageName p, x)) (packageImports p)
+        where f p = map (\x -> (packageName p, (importPkgPath x))) (packageImports p)
 
 
 -- | Remove from graph external dependencies
-removeExternalDepends :: [Package] -> Dependencies -> Dependencies
+removeExternalDepends :: [PackageName] -> Dependencies -> Dependencies
 removeExternalDepends vs = filter (\ (_, y) -> y `elem` vs)
         

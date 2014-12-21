@@ -16,7 +16,6 @@ import AST.Model
 import Text.ParserCombinators.Parsec
 import Control.Monad (void)
 import Utils.Folder (isJavaFile, listFilesR)
-import Utils.List (splitByLast)
 
 
 -- | Parse java source file
@@ -42,7 +41,7 @@ compilationUnit = do
     val <- package
     skipWhitespaces  
     imps <- importDecls
-    return $ Package val imps []
+    return $ addImports (mkPackage val) imps
 
     
 -- | Parse package declaration    
@@ -56,9 +55,8 @@ package = do
 importDecls :: Parser [ImportDecl]
 importDecls = many $ do 
     x <- packageDecl "import"
-    let (pkg, n) = splitByLast "." x
     skipWhitespaces
-    return $ ImportDecl pkg n
+    return $ mkImportDecl x
 
     
 -- | Parse package declaration
