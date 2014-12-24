@@ -1,7 +1,7 @@
-module Cantor.Language.Java.ParserSpec (spec) where
+module Cantor.Parser.JavaSpec (spec) where
 
-import Cantor.Language.Java.AST
-import Cantor.Language.Java.Parser
+import Cantor.Parser.AST
+import Cantor.Parser.Java
 import Text.Parsec.Error
 import Test.Hspec
 

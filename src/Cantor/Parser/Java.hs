@@ -12,19 +12,19 @@ Parser for Java sources.
 To parse single file use: parseFile
 To parse all files in given directory use: parseProject
 -}
-module Cantor.Parser.Java ( parseFile
-                          , parseProject ) where
+module Cantor.Parser.Java ( parseFile ) where
 
 import Cantor.Parser.AST
 import Text.ParserCombinators.Parsec
 import Control.Monad (void)
-import Cantor.Utils.Folder (isJavaFile, listFilesR)
+import Cantor.Utils.Folder (listFilesR)
 
 
 -- | Parse java source file
 parseFile :: FilePath -> IO (Either ParseError Package)
 parseFile = parseFromFile compilationUnit
 
+{-
 -- | Parse all project directories
 parseProject :: FilePath -> IO [Package] 
 parseProject src = do
@@ -35,7 +35,7 @@ parseProject src = do
         where f :: Either ParseError Package -> [Package] 
               f (Right a) = [a]
               f _ = []
-
+-}
 
 -- | Parse java compilation unit
 compilationUnit :: Parser Package
