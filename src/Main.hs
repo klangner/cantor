@@ -18,12 +18,13 @@ import System.Exit
 import Paths_cantor (version)
 import Data.Version (showVersion)
 import Cantor.Project (scanProject)
-import Cantor.Expert (mkExpert)
+import Cantor.KnowledgeDB (loadKDB)
 import Cantor.Analysis.Language (countSourceFiles)
 
 
 data Flag = Version -- -v
           | Help -- --help
+          | Lang -- --languages
           deriving (Eq,Ord,Enum,Show,Bounded)
         
         
@@ -31,9 +32,9 @@ main::IO ()
 main = do
     argv <- getArgs
     case getOpt Permute flags argv of
-        ([], [src], []) -> analyzeProject src
         ([Version], _, []) -> printVersion
         ([Help], _, []) -> printUsageInfo
+        (fs, [src], []) -> analyzeProject fs src
         (_, _, []) -> printUsageInfo
         (_, _, errs) -> errorAction errs
     
@@ -46,6 +47,8 @@ flags =
             "Print version number."
        ,Option "h" ["help"] (NoArg Help)
             "Print this help message."
+       ,Option "l" ["languages"] (NoArg Help)
+            "Check what languages is this application written in."
        ]
 
 
@@ -69,13 +72,14 @@ printUsageInfo = do
     putStrLn (usageInfo "" flags)
     
 
--- | Analize Java project and create report
-analyzeProject :: FilePath -> IO ()
-analyzeProject src = do
-    let expert = mkExpert
+-- | Analize project and create report
+-- What is analyzed depends on passed flags
+analyzeProject :: [Flag] -> FilePath -> IO ()
+analyzeProject _ src = do
+    let db = loadKDB
     prj <- scanProject src
     putStrLn "Found source files:"
-    let lc = countSourceFiles expert prj
+    let lc = countSourceFiles db prj
     mapM_ (\(l, n) -> putStrLn (l ++ ": " ++ show n)) lc
     return ()
 

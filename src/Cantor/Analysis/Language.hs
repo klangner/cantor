@@ -13,10 +13,10 @@ module Cantor.Analysis.Language ( countSourceFiles ) where
 import System.FilePath (takeExtension)
 import Data.List
 import Cantor.Project (Project, projectFiles)
-import Cantor.Expert (Expert, langFromExt)
+import Cantor.KnowledgeDB (KnowledgeDB, langFromExt)
 
 -- | Count number of files for each language used in project
-countSourceFiles :: Expert -> Project -> [(String, Int)]
+countSourceFiles :: KnowledgeDB -> Project -> [(String, Int)]
 countSourceFiles es prj = map (\as -> (head as, length as)) ls3
     where ls1 = map ((langFromExt es) . takeExtension) (projectFiles prj)
           ls2 = filter (not . null) ls1

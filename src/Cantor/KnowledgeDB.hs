@@ -8,26 +8,26 @@ Portability : portable
 
 Expert system with information and rules about computer systems.
 -}
-module Cantor.Expert ( Expert
-                     , mkExpert
-                     , langFromExt ) where
+module Cantor.KnowledgeDB ( KnowledgeDB
+                          , loadKDB
+                          , langFromExt ) where
 
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
 
 
-data Expert = Expert { extensions :: Map.Map String [String] }   -- file extension -> Programming language
+data KnowledgeDB = KDB { extensions :: Map.Map String [String] }   -- file extension -> Programming language
 
 -- | Create expert system
 --   Currently this expert system contains hardcoded data.
 --   In the future it will be probably refactored to read data from external files (datastore)
-mkExpert :: Expert
-mkExpert = Expert languageExtensions
+loadKDB :: KnowledgeDB
+loadKDB = KDB languageExtensions
 
 -- | Get language name based on given extension
 --   Since some extension can be used by different files (like *.h)
 --   This function will return list of possible languages or empty if extension is not registered
-langFromExt :: Expert -> String -> [String]
+langFromExt :: KnowledgeDB -> String -> [String]
 langFromExt ex ext = fromMaybe [] e
     where e = Map.lookup ext (extensions ex)
 
