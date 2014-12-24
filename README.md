@@ -1,9 +1,7 @@
 # Cantor
 
-Cantor is application for analyzing Java projects.
-
-Check sample [report](http://rawgithub.com/klangner/cantor/master/doc/report/index.html) for project
-[icfoundation](http://github.com/icplayer/icfoundation)
+Cantor is application for analyzing software project.
+The goal of this application is to help developer understand source code of unknown project.
 
 
 ## Installation
@@ -13,10 +11,8 @@ The library can be installed from [Hackage](http://hackage.haskell.org/package/c
 cabal install cantor
 ```
 
-## Usage
+## Sample Usage
 
 ```sh
 cantor <project_source_path>
 ```
-
-The report for this project will be generated in folder cantor-report.
