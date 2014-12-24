@@ -1,6 +1,6 @@
 # Cantor
 
-Cantor is application for analyzing software project.
+Cantor is application for analyzing software projects.
 The goal of this application is to help developer understand source code of unknown project.
 
 
