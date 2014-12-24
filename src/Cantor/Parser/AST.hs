@@ -1,5 +1,5 @@
 {- |
-Module : AST.Model
+Module : Cantor.Parser.AST
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -7,30 +7,28 @@ Maintainer : Krzysztof Langner <klangner@gmail.com>
 Stability : alpha
 Portability : portable
 
-AST model for java project
+AST model for java source code
 -}
-module AST.Model ( Class
-                 , Function
-                 , ImportDecl
-                 , Package
-                 , addImports
-                 , importPkgPath
-                 , importClass
-                 , mkImportDecl
-                 , mkPackage
-                 , packageDir
-                 , packageClasses
-                 , packageImports
-                 , packageName ) where
+module Cantor.Parser.AST ( Class
+                         , Function
+                         , ImportDecl
+                         , Package
+                         , addImports
+                         , importPkgPath
+                         , importClass
+                         , mkClass
+                         , mkImportDecl
+                         , mkPackage
+                         , packageDir
+                         , packageClasses
+                         , packageImports
+                         , packageName ) where
 
-import Utils.List (splitByLast)
+import Cantor.Utils.List (splitByLast)
 
-
+-- | some helper types
 type PackagePath = String
 type Name = String
-
--- | AST model of Java language
--- data AST = AST [Package]
 
 -- | Package
 data Package = Package { packageName :: String
@@ -60,8 +58,11 @@ packageDir (Package a _ _) = map f a
     where f x | x == '.' = '/'
               | otherwise = x    
 
-
 -- | Create import decalration
 mkImportDecl :: PackagePath -> ImportDecl
 mkImportDecl path = ImportDecl pkg cls
     where (pkg, cls) = splitByLast "." path
+
+-- | Create class
+mkClass :: Name -> Class
+mkClass name = Class name []

@@ -1,7 +1,6 @@
-module Project.MavenSpec (spec) where
+module Cantor.Language.Java.MavenSpec (spec) where
 
-import Project.Core
-import Project.Maven
+import Cantor.Language.Java.Maven
 import Test.Hspec
 --import Test.QuickCheck
 

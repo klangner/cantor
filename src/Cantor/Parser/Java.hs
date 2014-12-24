@@ -1,5 +1,5 @@
 {- |
-Module : AST.JavaParser
+Module : Cantor.Parser.Java
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -7,15 +7,18 @@ Maintainer : Krzysztof Langner <klangner@gmail.com>
 Stability : alpha
 Portability : portable
 
-Parse Java sources into AST 
--}
-module AST.JavaParser ( parseFile
-                      , parseProject ) where
+Parser for Java sources.
 
-import AST.Model
+To parse single file use: parseFile
+To parse all files in given directory use: parseProject
+-}
+module Cantor.Parser.Java ( parseFile
+                          , parseProject ) where
+
+import Cantor.Parser.AST
 import Text.ParserCombinators.Parsec
 import Control.Monad (void)
-import Utils.Folder (isJavaFile, listFilesR)
+import Cantor.Utils.Folder (isJavaFile, listFilesR)
 
 
 -- | Parse java source file

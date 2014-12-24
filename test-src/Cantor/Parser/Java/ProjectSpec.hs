@@ -1,6 +1,6 @@
-module Project.JavaSpec (spec) where
+module Cantor.Language.Java.ProjectSpec (spec) where
 
-import Project.Java
+import Cantor.Language.Java.Project
 import Test.Hspec
 import System.Directory
 

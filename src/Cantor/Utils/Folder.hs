@@ -1,21 +1,18 @@
 {- |
-Module : Utils.Folder
+Module : Cantor.Utils.Folder
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
 Helper module with functions operating on IO
 -}
-module Utils.Folder
-        ( isJavaFile
-        , listDirs
-        , listFiles
-        , listFilesR
-        )where
+module Cantor.Utils.Folder ( listDirs
+                           , listFiles
+                           , listFilesR
+                           ) where
 
 import System.Directory (canonicalizePath, getDirectoryContents, doesDirectoryExist)
 import Data.List
 import Control.Monad
-import System.FilePath (takeExtension)
 
 
 -- | list files
@@ -53,8 +50,4 @@ listFilesR p path = do
     children <- mapM (listFilesR p) dirs 
     return $ filtered ++ concat children
 
--- | Predicate to check if given source is Java file
-isJavaFile :: FilePath -> Bool
-isJavaFile src = takeExtension src == ".java"
-              
     

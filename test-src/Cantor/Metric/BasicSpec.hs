@@ -1,6 +1,6 @@
-module Metric.BasicSpec (spec) where
+module Cantor.Metric.BasicSpec (spec) where
 
-import Metric.Basic
+import Cantor.Metric.Basic
 import Test.Hspec
 
 

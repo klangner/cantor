@@ -1,15 +1,15 @@
 {- |
-Module : Utils.List
+Module : Cantor.Utils.List
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
 Helper module with functions operating on lists
 -}
-module Utils.List ( commonPrefix 
-                  , simplifyNames
-                  , splitByLast 
-                  , takePrefix
-                  , unique )where
+module Cantor.Utils.List ( commonPrefix 
+                         , simplifyNames
+                         , splitByLast 
+                         , takePrefix
+                         , unique ) where
 
 import Data.Set (fromList, toList)
 import Data.List (intercalate)

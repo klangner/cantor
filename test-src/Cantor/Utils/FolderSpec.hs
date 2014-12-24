@@ -1,6 +1,6 @@
-module Utils.FolderSpec (spec) where
+module Cantor.Utils.FolderSpec (spec) where
 
-import Utils.Folder
+import Cantor.Utils.Folder
 import Test.Hspec
 
 

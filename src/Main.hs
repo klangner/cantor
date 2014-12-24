@@ -12,13 +12,14 @@ Main GUI application for gathering and presenting information..
 module Main where
 
 import System.Environment
-import System.Directory (createDirectoryIfMissing)
+-- import System.Directory (createDirectoryIfMissing)
 import System.Console.GetOpt
 import System.Exit
 import Paths_cantor (version)
 import Data.Version (showVersion)
-import Project.Java
-import Report.Builder (buildReport)
+import Cantor.Project (scanProject)
+import Cantor.Expert (mkExpert)
+import Cantor.Analysis.Language (countSourceFiles)
 
 
 data Flag = Version -- -v
@@ -71,17 +72,18 @@ printUsageInfo = do
 -- | Analize Java project and create report
 analyzeProject :: FilePath -> IO ()
 analyzeProject src = do
-    reportFolder <- createReportFolder
-    putStrLn "Scanning project..." 
-    prj <- scanJavaProject src
-    putStrLn "Build metrics"
-    buildReport reportFolder prj
+    let expert = mkExpert
+    prj <- scanProject src
+    putStrLn "Found source files:"
+    let lc = countSourceFiles expert prj
+    mapM_ (\(l, n) -> putStrLn (l ++ ": " ++ show n)) lc
+    return ()
 
-
+{-
 -- | Create folder for report data
 createReportFolder :: IO FilePath
 createReportFolder = do
     createDirectoryIfMissing False path
     return path
     where path = "./cantor-report"
-    
+-}
