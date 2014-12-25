@@ -17,7 +17,7 @@ import System.Exit
 import Paths_cantor (version)
 import Data.Version (showVersion)
 import Cantor.Project (Project, scanProject)
-import Cantor.KnowledgeDB (KnowledgeDB, loadKDB)
+import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
 import Cantor.Analysis.Language (countSourceFiles)
 
 
@@ -82,7 +82,6 @@ printUsageInfo = do
 -- What is analyzed depends on passed flags
 analyzeProject :: [Flag] -> FilePath -> IO ()
 analyzeProject xs src = do
-    putStrLn (show xs)
     let db = loadKDB
     prj <- scanProject src
     mapM_ (\x -> (f x) db prj) xs
@@ -101,7 +100,7 @@ analyzeLanguages db prj = do
     let (lang, _) = foldl (\(l0, n0) (l, n) -> if(n > n0) then (l,n) else (l0,n0)) ("",0) lc
     putStrLn $ "This application is written in " ++ lang
     putStrLn $ "Check more about " ++ lang ++ " at:"
-    putStrLn $ "url/language/" ++ lang
+    putStrLn $ (conceptUrl db lang)
     return ()
 
 -- | Analize build system used by project

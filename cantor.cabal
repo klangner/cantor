@@ -1,5 +1,5 @@
 name:           cantor
-version:        0.5
+version:        0.4
 cabal-version:  >= 1.10
 build-type:     Simple
 author:         Krzysztof Langner
@@ -14,11 +14,12 @@ License-file:   LICENSE
 Extra-Source-Files:
                 CHANGES
 description:    
-    Application for analyzing Java source code.
+    Cantor is application for analyzing software projects.
+    The goal of this application is to help developer understand source code of unknown project.
     .
     Currently implemented:
     .
-    * Package dependency analysis
+    * Find language the application is written in
     .
     * Line Of Code metric.
 
