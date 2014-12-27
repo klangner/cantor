@@ -19,13 +19,14 @@ import Data.Char
 
 
 data KnowledgeDB = KDB { extensions :: Map.Map String [String]  -- file extension -> Programming language
+                       , _buildSystems :: Map.Map String String  -- filename -> build system
                        , concepts :: Map.Map String String }    -- concept URLs
 
 -- | Create expert system
 --   Currently this expert system contains hardcoded data.
 --   In the future it will be probably refactored to read data from external files (datastore)
 loadKDB :: KnowledgeDB
-loadKDB = KDB languageExtDB conceptUrlDB
+loadKDB = KDB languageExtDB buildSystemDB conceptUrlDB
 
 -- | Get language name based on given extension
 --   Since some extension can be used by different files (like *.h)
@@ -51,11 +52,9 @@ languageExtDB = Map.fromList [ (".c", ["C"])
                              , (".cpp", ["C++"])
                              , (".cs", ["C#"])
                              , (".clj", ["Clojure"])
-                             , (".css", ["CSS"])
                              , (".fs", ["F#"])
                              , (".go", ["Go"])
                              , (".hs", ["Haskell"])
-                             , (".html", ["HTML"])
                              , (".java", ["Java"])
                              , (".js", ["JavaScript"])
                              , (".m", ["Objective-C"])
@@ -70,6 +69,16 @@ languageExtDB = Map.fromList [ (".c", ["C"])
                              , (".sql", ["SQL"])
                              , (".vb", ["Visual Basic"])]
 
+
+-- mapping from file name to build system
+buildSystemDB :: Map.Map String String
+buildSystemDB = Map.fromList [ ("CMakeLists.txt", "CMake")
+                             , (".cabal", "Cabal")
+                             , ("build.xml", "Ant")
+                             , ("pom.xml", "Maven")
+                             , ("Rakefile", "Ruby")
+                             , ("Makefile.in", "Makefile")
+                             , (".sbt", "Scala SBT")]
 
 -- URLs with additional information about concepts
 conceptUrlDB :: Map.Map String String

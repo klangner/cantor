@@ -15,6 +15,7 @@ import Data.List
 import Cantor.Project (Project, projectFiles)
 import Cantor.KnowledgeDB (KnowledgeDB, langFromExt)
 
+
 -- | Count number of files for each language used in project
 countSourceFiles :: KnowledgeDB -> Project -> [(String, Int)]
 countSourceFiles es prj = map (\as -> (head as, length as)) ls3

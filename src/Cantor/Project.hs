@@ -15,13 +15,17 @@ module Cantor.Project ( Project
                       , scanProject ) where
 
 import Cantor.Utils.Folder (listFilesR)
+import System.Directory
 
 
-data Project = Project { projectPath :: FilePath
-                       , projectFiles :: [FilePath] } deriving(Show)
+data Project = Prj { projectPath :: FilePath
+                   , projectFiles :: [FilePath] } deriving(Show)
 
 -- | Create new project by scanning all files at given path
 scanProject :: FilePath -> IO Project
 scanProject path = do
-    files <- listFilesR (const True) path
-    return $ Project path files
+    dp <- canonicalizePath path
+    files <- listFilesR (const True) dp
+    let n = length dp
+    let as = map (drop n) files
+    return $ Prj path as
