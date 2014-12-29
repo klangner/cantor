@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/klangner/cantor.svg?branch=master)](https://travis-ci.org/klangner/cantor)
+
 # Cantor
 
 Cantor is application for analyzing software projects.
