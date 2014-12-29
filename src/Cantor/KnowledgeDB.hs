@@ -6,7 +6,8 @@ Maintainer : Krzysztof Langner <klangner@gmail.com>
 Stability : alpha
 Portability : portable
 
-Expert system with information and rules about computer systems.
+Knowledge DB with facts about programming languages, build systems etc.
+This is static information provided by application.
 -}
 module Cantor.KnowledgeDB ( KnowledgeDB
                           , conceptUrl
@@ -22,14 +23,14 @@ data KnowledgeDB = KDB { extensions :: Map.Map String [String]  -- file extensio
                        , _buildSystems :: Map.Map String String  -- filename -> build system
                        , concepts :: Map.Map String String }    -- concept URLs
 
--- | Create expert system
---   Currently this expert system contains hardcoded data.
---   In the future it will be probably refactored to read data from external files (datastore)
+-- | Create knowledge database
+--   Currently this db contains hardcoded data.
+--   In the future it should be refactored to read data from external files.
 loadKDB :: KnowledgeDB
 loadKDB = KDB languageExtDB buildSystemDB conceptUrlDB
 
 -- | Get language name based on given extension
---   Since some extension can be used by different files (like *.h)
+--   Since some extension can be used by different languages (like *.h)
 --   This function will return list of possible languages or empty if extension is not registered
 langFromExt :: KnowledgeDB -> String -> [String]
 langFromExt db ext = fromMaybe [] e

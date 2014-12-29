@@ -7,7 +7,7 @@ Maintainer : Krzysztof Langner <klangner@gmail.com>
 Stability : alpha
 Portability : portable
 
-Main GUI application for gathering and presenting information..
+Main application for gathering and presenting information about software project.
 -}
 module Main where
 
@@ -127,14 +127,14 @@ analyzeLanguages db prj = do
 -- | Analize build system used by project
 analyzeBuildSystem :: KnowledgeDB -> Project -> IO Report
 analyzeBuildSystem _ _ = do
-    return $ mkChapter "Build system" []
+    return $ mkChapter "Build system" [mkParagraph [mkText "Not implemented yet"]]
 
 -- | Analize requirements
 analyzeRequirements :: KnowledgeDB -> Project -> IO Report
 analyzeRequirements _ _ = do
-    return $ mkChapter "Requirements" []
+    return $ mkChapter "Requirements" [mkParagraph [mkText "Not implemented yet"]]
 
 -- | Analize architecture
 analyzeArchitecture :: KnowledgeDB -> Project -> IO Report
 analyzeArchitecture _ _ = do
-    return $ mkChapter "Architecture" []
+    return $ mkChapter "Architecture" [mkParagraph [mkText "Not implemented yet"]]

@@ -6,7 +6,7 @@ Maintainer : Krzysztof Langner <klangner@gmail.com>
 Stability : alpha
 Portability : portable
 
-Analysis of language used in project.
+Analysis related to the language used in the project.
 -}
 module Cantor.Analysis.Language ( countSourceFiles
                                 , lineOfCode ) where
