@@ -24,9 +24,11 @@ import Cantor.Report
 
 data Flag = Version -- -v
           | Help -- --help
+          | Arch -- --build
           | Build -- --build
           | Lang -- --languages
           | Modules -- --modules
+          | Req -- --requirements
           deriving (Eq,Ord,Enum,Show,Bounded)
         
         
@@ -46,7 +48,9 @@ main = do
 -- | Command line flags
 flags :: [OptDescr Flag]
 flags =
-       [ Option "b" ["build"] (NoArg Build)
+       [ Option "a" ["architecture"] (NoArg Arch)
+            "Describe project architecture."
+       , Option "b" ["build"] (NoArg Build)
             "Check what build system is used by project."
        , Option "h" ["help"] (NoArg Help)
             "Print this help message."
@@ -54,6 +58,8 @@ flags =
             "Check what languages is this application written in."
        , Option "m" ["modules"] (NoArg Modules)
             "Find independed modules in the project."
+       , Option "r" ["requirements"] (NoArg Req)
+            "Project requirements. What you need to on your OS to run this program"
        , Option "v" ["version"] (NoArg Version)
             "Print version number."
        ]
@@ -82,7 +88,7 @@ printUsageInfo = do
 -- | Build full report for given project
 -- What is analyzed depends on passed flags
 createFullReport :: FilePath -> IO ()
-createFullReport src = analyzeProject [Lang, Build] src
+createFullReport src = analyzeProject [Lang, Build, Req, Arch] src
 
 
 -- | Analize project and create report
@@ -97,6 +103,7 @@ analyzeProject xs src = do
     putStrLn $ markdown r1
     return ()
     where f Build = analyzeBuildSystem
+          f Req = analyzeRequirements
           f _ = analyzeLanguages
 
 
@@ -109,7 +116,7 @@ analyzeLanguages db prj = do
     let (lang, _) = foldl (\(l0, n0) (l, n) -> if(n > n0) then (l,n) else (l0,n0)) ("",0) lc
     return $ mkChapter "Programming languages" [ mkParagraph [mkText "This project consists of the following languages:"]
                                                , mkList langInfo
-                                               , mkParagraph [ mkText "The main language is: "
+                                               , mkParagraph [ mkText "The main language is "
                                                              , mkStrong lang
                                                              , mkText (" (" ++ (conceptUrl db lang) ++ ")")]
                                                ]
@@ -118,3 +125,13 @@ analyzeLanguages db prj = do
 analyzeBuildSystem :: KnowledgeDB -> Project -> IO Report
 analyzeBuildSystem _ _ = do
     return $ mkChapter "Build system" []
+
+-- | Analize requirements
+analyzeRequirements :: KnowledgeDB -> Project -> IO Report
+analyzeRequirements _ _ = do
+    return $ mkChapter "Requirements" []
+
+-- | Analize architecture
+analyzeArchitecture :: KnowledgeDB -> Project -> IO Report
+analyzeArchitecture _ _ = do
+    return $ mkChapter "Architecture" []

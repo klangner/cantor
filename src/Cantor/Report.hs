@@ -69,7 +69,7 @@ addChapters r1 rs2 = Main "" (r1:rs2)
 -- | Convert to markdown
 markdown :: Report -> String
 markdown (Main t rs) = "#" ++ t ++ "\n" ++ concatMap markdown rs
-markdown (Chapter t rs) = "\n##" ++ t ++ "\n" ++ concatMap markdown rs
+markdown (Chapter t rs) = "\n## " ++ t ++ "\n" ++ concatMap markdown rs
 markdown (Paragraph rs) = concatMap mdInline rs ++ "\n"
 markdown (List rs) = concatMap (\x -> "*" ++ x ++ "\n") rs
 
