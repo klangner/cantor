@@ -19,6 +19,7 @@ import Data.Version (showVersion)
 import Cantor.Project (Project, scanProject)
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
 import Cantor.Analysis.Language (countSourceFiles)
+import Cantor.Report
 
 
 data Flag = Version -- -v
@@ -35,7 +36,7 @@ main = do
     case getOpt Permute flags argv of
         ([Version], _, []) -> printVersion
         ([Help], _, []) -> printUsageInfo
-        ([], [src], []) -> analyzeProject [Lang] src
+        ([], [src], []) -> createFullReport src
         (xs, [src], []) -> analyzeProject xs src
         (_, _, []) -> printUsageInfo
         (_, _, errs) -> errorAction errs
@@ -76,7 +77,13 @@ printUsageInfo :: IO ()
 printUsageInfo = do
     putStrLn "Usage: cantor <project_path>"
     putStrLn (usageInfo "" flags)
-    
+
+
+-- | Build full report for given project
+-- What is analyzed depends on passed flags
+createFullReport :: FilePath -> IO ()
+createFullReport src = analyzeProject [Lang, Build] src
+
 
 -- | Analize project and create report
 -- What is analyzed depends on passed flags
@@ -84,7 +91,10 @@ analyzeProject :: [Flag] -> FilePath -> IO ()
 analyzeProject xs src = do
     let db = loadKDB
     prj <- scanProject src
-    mapM_ (\x -> (f x) db prj) xs
+    let r0 = mkReport ("Project: " ++ src)
+    rs <- mapM (\x -> (f x) db prj) xs
+    let r1 = addChapters r0 rs
+    putStrLn $ markdown r1
     return ()
     where f Build = analyzeBuildSystem
           f _ = analyzeLanguages
@@ -92,19 +102,19 @@ analyzeProject xs src = do
 
 
 -- | Analize langauge used in project
-analyzeLanguages :: KnowledgeDB -> Project -> IO ()
+analyzeLanguages :: KnowledgeDB -> Project -> IO Report
 analyzeLanguages db prj = do
-    putStrLn "Found source files:"
     let lc = countSourceFiles db prj
-    mapM_ (\(l, n) -> putStrLn (l ++ ": " ++ show n)) lc
+    let langInfo = map (\(l, n) -> l ++ ": " ++ show n ++ " files.") lc
     let (lang, _) = foldl (\(l0, n0) (l, n) -> if(n > n0) then (l,n) else (l0,n0)) ("",0) lc
-    putStrLn $ "This application is written in " ++ lang
-    putStrLn $ "Check more about " ++ lang ++ " at:"
-    putStrLn $ (conceptUrl db lang)
-    return ()
+    return $ mkChapter "Programming languages" [ mkParagraph [mkText "This project consists of the following languages:"]
+                                               , mkList langInfo
+                                               , mkParagraph [ mkText "The main language is: "
+                                                             , mkStrong lang
+                                                             , mkText (" (" ++ (conceptUrl db lang) ++ ")")]
+                                               ]
 
 -- | Analize build system used by project
-analyzeBuildSystem :: KnowledgeDB -> Project -> IO ()
+analyzeBuildSystem :: KnowledgeDB -> Project -> IO Report
 analyzeBuildSystem _ _ = do
-    putStrLn $ "Build system used by project: " ++ "Unknown"
-    return ()
+    return $ mkChapter "Build system" []

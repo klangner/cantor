@@ -75,6 +75,7 @@ buildSystemDB :: Map.Map String String
 buildSystemDB = Map.fromList [ ("CMakeLists.txt", "CMake")
                              , (".cabal", "Cabal")
                              , ("build.xml", "Ant")
+                             , ("build.gradle", "Gradle")
                              , ("pom.xml", "Maven")
                              , ("Rakefile", "Ruby")
                              , ("Makefile.in", "Makefile")
