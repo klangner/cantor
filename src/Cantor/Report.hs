@@ -71,7 +71,7 @@ markdown :: Report -> String
 markdown (Main t rs) = "#" ++ t ++ "\n" ++ concatMap markdown rs
 markdown (Chapter t rs) = "\n## " ++ t ++ "\n" ++ concatMap markdown rs
 markdown (Paragraph rs) = concatMap mdInline rs ++ "\n"
-markdown (List rs) = concatMap (\x -> "*" ++ x ++ "\n") rs
+markdown (List rs) = concatMap (\x -> "* " ++ x ++ "\n") rs
 
 -- render inline elements
 mdInline :: Inline -> String

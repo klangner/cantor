@@ -18,7 +18,7 @@ import Paths_cantor (version)
 import Data.Version (showVersion)
 import Cantor.Project (Project, scanProject)
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
-import Cantor.Analysis.Language (countSourceFiles)
+import Cantor.Analysis.Language (countSourceFiles, lineOfCode)
 import Cantor.Report
 
 
@@ -104,6 +104,7 @@ analyzeProject xs src = do
     return ()
     where f Build = analyzeBuildSystem
           f Req = analyzeRequirements
+          f Arch = analyzeArchitecture
           f _ = analyzeLanguages
 
 
@@ -114,11 +115,13 @@ analyzeLanguages db prj = do
     let lc = countSourceFiles db prj
     let langInfo = map (\(l, n) -> l ++ ": " ++ show n ++ " files.") lc
     let (lang, _) = foldl (\(l0, n0) (l, n) -> if(n > n0) then (l,n) else (l0,n0)) ("",0) lc
+    loc <- lineOfCode db prj
     return $ mkChapter "Programming languages" [ mkParagraph [mkText "This project consists of the following languages:"]
                                                , mkList langInfo
                                                , mkParagraph [ mkText "The main language is "
                                                              , mkStrong lang
                                                              , mkText (" (" ++ (conceptUrl db lang) ++ ")")]
+                                               , mkParagraph [ mkText $ "There are " ++ show loc ++ " lines of code."]
                                                ]
 
 -- | Analize build system used by project
