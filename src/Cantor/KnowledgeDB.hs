@@ -10,17 +10,19 @@ Knowledge DB with facts about programming languages, build systems etc.
 This is static information provided by application.
 -}
 module Cantor.KnowledgeDB ( KnowledgeDB
+                          , bsFromFilePath
                           , conceptUrl
                           , loadKDB
                           , langFromExt ) where
 
 import qualified Data.Map as Map
+import Data.List (isSuffixOf)
 import Data.Maybe (fromMaybe)
 import Data.Char
 
 
 data KnowledgeDB = KDB { extensions :: Map.Map String [String]  -- file extension -> Programming language
-                       , _buildSystems :: Map.Map String String  -- filename -> build system
+                       , buildSystems :: [(String, String)]  -- filename -> build system
                        , concepts :: Map.Map String String }    -- concept URLs
 
 -- | Create knowledge database
@@ -35,6 +37,12 @@ loadKDB = KDB languageExtDB buildSystemDB conceptUrlDB
 langFromExt :: KnowledgeDB -> String -> [String]
 langFromExt db ext = fromMaybe [] e
     where e = Map.lookup ext (extensions db)
+
+-- | Get build system name based on given file path
+bsFromFilePath :: KnowledgeDB -> String -> Maybe String
+bsFromFilePath db fp = if null ys then Nothing else Just (head ys)
+    where xs = filter (\(x,y) -> isSuffixOf x fp) (buildSystems db)
+          ys = map (\(x,y) -> y) xs
 
 
 -- | Get URL describing concept
@@ -72,15 +80,15 @@ languageExtDB = Map.fromList [ (".c", ["C"])
 
 
 -- mapping from file name to build system
-buildSystemDB :: Map.Map String String
-buildSystemDB = Map.fromList [ ("CMakeLists.txt", "CMake")
-                             , (".cabal", "Cabal")
-                             , ("build.xml", "Ant")
-                             , ("build.gradle", "Gradle")
-                             , ("pom.xml", "Maven")
-                             , ("Rakefile", "Ruby")
-                             , ("Makefile.in", "Makefile")
-                             , (".sbt", "Scala SBT")]
+buildSystemDB :: [(String, String)]
+buildSystemDB = [ ("CMakeLists.txt", "CMake")
+                , (".cabal", "Cabal")
+                , ("build.xml", "Ant")
+                , ("build.gradle", "Gradle")
+                , ("pom.xml", "Maven")
+                , ("Rakefile", "Rake")
+                , ("Makefile.in", "Make")
+                , (".sbt", "Scala SBT")]
 
 -- URLs with additional information about concepts
 conceptUrlDB :: Map.Map String String

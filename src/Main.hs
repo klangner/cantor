@@ -14,11 +14,12 @@ module Main where
 import System.Environment
 import System.Console.GetOpt
 import System.Exit
+import Data.Maybe (isJust, fromJust)
 import Paths_cantor (version)
 import Data.Version (showVersion)
-import Cantor.Project (Project, scanProject)
+import Cantor.Project (Project, countSourceFiles, findBuildSystem, scanProject)
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
-import Cantor.Analysis.Language (countSourceFiles, lineOfCode)
+import Cantor.Analysis.Metrics (lineOfCode)
 import Cantor.Report
 
 
@@ -126,8 +127,12 @@ analyzeLanguages db prj = do
 
 -- | Analize build system used by project
 analyzeBuildSystem :: KnowledgeDB -> Project -> IO Report
-analyzeBuildSystem _ _ = do
-    return $ mkChapter "Build system" [mkParagraph [mkText "Not implemented yet"]]
+analyzeBuildSystem db prj = do
+    let bs = findBuildSystem db prj
+    putStrLn (show bs)
+    let xs1 = if isJust bs then "This project is build with " ++ fromJust bs
+              else "Build system not found."
+    return $ mkChapter "Build system" [mkParagraph [mkText xs1]]
 
 -- | Analize requirements
 analyzeRequirements :: KnowledgeDB -> Project -> IO Report
