@@ -1,6 +1,11 @@
+Version 0.5
+-----------
+* Find languages used in project
+* Find build system
+
 Version 0.4
 -----------
-* Refactored for application for analkysis any application instead of just Java.
+* Refactored for application for analysis any application instead of just Java.
 
 Version 0.3
 -----------
