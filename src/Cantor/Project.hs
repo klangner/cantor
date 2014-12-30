@@ -10,10 +10,10 @@ Portability : portable
 Data Types and functions for procesing project
 -}
 module Cantor.Project ( Project
-                      , countSourceFiles
-                      , findBuildSystem
+                      , projectBuildSystem
                       , projectPath
                       , projectFiles
+                      , projectLanguages
                       , scanProject ) where
 
 import Data.List
@@ -25,26 +25,30 @@ import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt)
 
 
 data Project = Prj { projectPath :: FilePath
-                   , projectFiles :: [FilePath] } deriving(Show)
+                   , projectFiles :: [FilePath]
+                   , projectLanguages :: [(String, Int)]  -- Language name and file count
+                   , projectBuildSystem :: Maybe String }
 
 -- | Create new project by scanning all files at given path
-scanProject :: FilePath -> IO Project
-scanProject path = do
+scanProject :: KnowledgeDB -> FilePath -> IO Project
+scanProject db path = do
     dp <- canonicalizePath path
     files <- listFilesR (const True) dp
     let n = length dp
-    let as = map (drop n) files
-    return $ Prj path as
+    let fps = map (drop n) files
+    let ls = countSourceFiles db fps
+    let bs = findBuildSystem db fps
+    return $ Prj path fps ls bs
 
 -- | Count number of files for each language used in project
-countSourceFiles :: KnowledgeDB -> Project -> [(String, Int)]
-countSourceFiles db prj = map (\as -> (head as, length as)) ls3
-    where ls1 = map ((langFromExt db) . takeExtension) (projectFiles prj)
+countSourceFiles :: KnowledgeDB -> [FilePath] -> [(String, Int)]
+countSourceFiles db fps = map (\as -> (head as, length as)) ls3
+    where ls1 = map ((langFromExt db) . takeExtension) fps
           ls2 = filter (not . null) ls1
           ls3 = group (sort (map head ls2))
 
 -- | Find build system used by project
-findBuildSystem :: KnowledgeDB -> Project -> Maybe String
-findBuildSystem db prj = if null xs2 then Nothing else head xs2
-    where xs1 = map (bsFromFilePath db) (projectFiles prj)
+findBuildSystem :: KnowledgeDB -> [FilePath] -> Maybe String
+findBuildSystem db fps = if null xs2 then Nothing else head xs2
+    where xs1 = map (bsFromFilePath db) fps
           xs2 = filter (isJust) xs1

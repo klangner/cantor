@@ -14,10 +14,10 @@ module Main where
 import System.Environment
 import System.Console.GetOpt
 import System.Exit
-import Data.Maybe (isJust, fromJust)
+import Data.Maybe (isJust, fromMaybe)
 import Paths_cantor (version)
 import Data.Version (showVersion)
-import Cantor.Project (Project, countSourceFiles, findBuildSystem, scanProject)
+import Cantor.Project (Project, projectLanguages, projectBuildSystem, scanProject)
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
 import Cantor.Analysis.Metrics (lineOfCode)
 import Cantor.Report
@@ -97,23 +97,23 @@ createFullReport src = analyzeProject [Lang, Build, Req, Arch] src
 analyzeProject :: [Flag] -> FilePath -> IO ()
 analyzeProject xs src = do
     let db = loadKDB
-    prj <- scanProject src
+    prj <- scanProject db src
     let r0 = mkReport ("Project: " ++ src)
     rs <- mapM (\x -> (f x) db prj) xs
     let r1 = addChapters r0 rs
     putStrLn $ markdown r1
     return ()
-    where f Build = analyzeBuildSystem
-          f Req = analyzeRequirements
-          f Arch = analyzeArchitecture
-          f _ = analyzeLanguages
+    where f Build = reportBuildSystem
+          f Req = reportRequirements
+          f Arch = reportArchitecture
+          f _ = reportLanguages
 
 
 
 -- | Analize langauge used in project
-analyzeLanguages :: KnowledgeDB -> Project -> IO Report
-analyzeLanguages db prj = do
-    let lc = countSourceFiles db prj
+reportLanguages :: KnowledgeDB -> Project -> IO Report
+reportLanguages db prj = do
+    let lc = projectLanguages prj
     let langInfo = map (\(l, n) -> l ++ ": " ++ show n ++ " files.") lc
     let (lang, _) = foldl (\(l0, n0) (l, n) -> if(n > n0) then (l,n) else (l0,n0)) ("",0) lc
     loc <- lineOfCode db prj
@@ -126,20 +126,20 @@ analyzeLanguages db prj = do
                                                ]
 
 -- | Analize build system used by project
-analyzeBuildSystem :: KnowledgeDB -> Project -> IO Report
-analyzeBuildSystem db prj = do
-    let bs = findBuildSystem db prj
-    putStrLn (show bs)
-    let xs1 = if isJust bs then "This project is build with " ++ fromJust bs
+reportBuildSystem :: KnowledgeDB -> Project -> IO Report
+reportBuildSystem db prj = do
+    let bs = projectBuildSystem prj
+    let bsName = fromMaybe "" bs
+    let xs1 = if isJust bs then "This project is build with " ++ bsName ++ " (" ++ (conceptUrl db bsName) ++ ")"
               else "Build system not found."
     return $ mkChapter "Build system" [mkParagraph [mkText xs1]]
 
 -- | Analize requirements
-analyzeRequirements :: KnowledgeDB -> Project -> IO Report
-analyzeRequirements _ _ = do
+reportRequirements :: KnowledgeDB -> Project -> IO Report
+reportRequirements _ _ = do
     return $ mkChapter "Requirements" [mkParagraph [mkText "Not implemented yet"]]
 
 -- | Analize architecture
-analyzeArchitecture :: KnowledgeDB -> Project -> IO Report
-analyzeArchitecture _ _ = do
+reportArchitecture :: KnowledgeDB -> Project -> IO Report
+reportArchitecture _ _ = do
     return $ mkChapter "Architecture" [mkParagraph [mkText "Not implemented yet"]]

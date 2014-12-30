@@ -41,8 +41,8 @@ langFromExt db ext = fromMaybe [] e
 -- | Get build system name based on given file path
 bsFromFilePath :: KnowledgeDB -> String -> Maybe String
 bsFromFilePath db fp = if null ys then Nothing else Just (head ys)
-    where xs = filter (\(x,y) -> isSuffixOf x fp) (buildSystems db)
-          ys = map (\(x,y) -> y) xs
+    where xs = filter (\(x,_) -> isSuffixOf x fp) (buildSystems db)
+          ys = map (\(_,y) -> y) xs
 
 
 -- | Get URL describing concept
@@ -88,7 +88,7 @@ buildSystemDB = [ ("CMakeLists.txt", "CMake")
                 , ("pom.xml", "Maven")
                 , ("Rakefile", "Rake")
                 , ("Makefile.in", "Make")
-                , (".sbt", "Scala SBT")]
+                , (".sbt", "SBT")]
 
 -- URLs with additional information about concepts
 conceptUrlDB :: Map.Map String String
@@ -117,4 +117,12 @@ conceptUrlDB = Map.fromList [
                             , ("sql", "http://en.wikipedia.org/wiki/SQL")
                             , ("visual basic", "http://en.wikipedia.org/wiki/Visual_Basic")
                             -- Build systems
+                            , ("Ant", "http://ant.apache.org/")
+                            , ("Cabal", "https://www.haskell.org/cabal/")
+                            , ("CMake", "http://www.cmake.org/")
+                            , ("Gradle", "https://www.gradle.org/")
+                            , ("Make", "https://www.gnu.org/software/make/")
+                            , ("Maven", "http://maven.apache.org/")
+                            , ("Rake", "https://github.com/ruby/rake")
+                            , ("SBT", "http://www.scala-sbt.org/")
                             ]
