@@ -22,12 +22,13 @@ import Cantor.Utils.Folder (listFilesR)
 import System.FilePath (takeExtension)
 import System.Directory
 import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt)
+import Cantor.BuildSystem (BuildSystem, mkBuildSystem)
 
 
 data Project = Prj { projectPath :: FilePath
                    , projectFiles :: [FilePath]
                    , projectLanguages :: [(String, Int)]  -- Language name and file count
-                   , projectBuildSystem :: Maybe String }
+                   , projectBuildSystem :: BuildSystem }
 
 -- | Create new project by scanning all files at given path
 scanProject :: KnowledgeDB -> FilePath -> IO Project
@@ -37,7 +38,7 @@ scanProject db path = do
     let n = length dp
     let fps = map (drop n) files
     let ls = countSourceFiles db fps
-    let bs = findBuildSystem db fps
+    let bs = readBS path (findBuildSystem db fps)
     return $ Prj path fps ls bs
 
 -- | Count number of files for each language used in project
@@ -47,8 +48,16 @@ countSourceFiles db fps = map (\as -> (head as, length as)) ls3
           ls2 = filter (not . null) ls1
           ls3 = group (sort (map head ls2))
 
--- | Find build system used by project
-findBuildSystem :: KnowledgeDB -> [FilePath] -> Maybe String
-findBuildSystem db fps = if null xs2 then Nothing else head xs2
-    where xs1 = map (bsFromFilePath db) fps
-          xs2 = filter (isJust) xs1
+-- | Find build system used by project. Return build system name and path to build file.
+findBuildSystem :: KnowledgeDB -> [FilePath] -> Maybe (FilePath, String)
+findBuildSystem db fps = if null xs2 then Nothing else f(head xs2)
+    where xs1 = map (\x -> (x, bsFromFilePath db x)) fps
+          xs2 = filter (\(_,y) -> isJust y) xs1
+          f (x, Just y) = Just (x,y)
+          f (_, _) = Nothing
+
+-- Read build system data
+readBS :: FilePath -> Maybe (FilePath, String) -> BuildSystem
+readBS path Nothing = mkBuildSystem path "None"
+readBS path (Just (_fp, "Maven")) = mkBuildSystem path "Maven"
+readBS path (Just (_, xs)) = mkBuildSystem path xs

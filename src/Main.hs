@@ -14,13 +14,13 @@ module Main where
 import System.Environment
 import System.Console.GetOpt
 import System.Exit
-import Data.Maybe (isJust, fromMaybe)
 import Paths_cantor (version)
 import Data.Version (showVersion)
 import Cantor.Project (Project, projectLanguages, projectBuildSystem, scanProject)
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
 import Cantor.Analysis.Metrics (lineOfCode)
 import Cantor.Report
+import Cantor.BuildSystem (bsType)
 
 
 data Flag = Version -- -v
@@ -129,9 +129,7 @@ reportLanguages db prj = do
 reportBuildSystem :: KnowledgeDB -> Project -> IO Report
 reportBuildSystem db prj = do
     let bs = projectBuildSystem prj
-    let bsName = fromMaybe "" bs
-    let xs1 = if isJust bs then "This project is build with " ++ bsName ++ " (" ++ (conceptUrl db bsName) ++ ")"
-              else "Build system not found."
+    let xs1 = "This project is build with " ++ bsType bs ++ " (" ++ (conceptUrl db (bsType bs)) ++ ")"
     return $ mkChapter "Build system" [mkParagraph [mkText xs1]]
 
 -- | Analize requirements

@@ -23,3 +23,15 @@ cabal install cantor
 ```sh
 cantor <project_source_path>
 ```
+
+## Building
+
+```sh
+$ cabal sandbox init                   # Initialise the sandbox
+$ cabal install --only-dependencies    # Install dependencies into the sandbox
+$ cabal build                          # Build application
+```
+
+
+## Redistributing
+This code is distributed under BSD3 License. It may be freely redistributed, subject to the provisions of this license.
