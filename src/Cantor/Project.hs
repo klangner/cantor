@@ -22,7 +22,7 @@ import Cantor.Utils.Folder (listFilesR)
 import System.FilePath (takeExtension)
 import System.Directory
 import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt)
-import Cantor.BuildSystem (BuildSystem, mkBuildSystem)
+import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem)
 
 
 data Project = Prj { projectPath :: FilePath

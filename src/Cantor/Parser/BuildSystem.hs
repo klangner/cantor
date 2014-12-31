@@ -9,12 +9,12 @@ Portability : portable
 
 Data types used by different parsers
 -}
-module Cantor.BuildSystem ( BuildSystem
-                          , bsFilePath
-                          , bsProjectName
-                          , bsSDK
-                          , bsType
-                          , mkBuildSystem ) where
+module Cantor.Parser.BuildSystem ( BuildSystem
+                                 , bsFilePath
+                                 , bsProjectName
+                                 , bsSDK
+                                 , bsType
+                                 , mkBuildSystem ) where
 
 
 -- | Build system (Maven, Cabal etc.)
