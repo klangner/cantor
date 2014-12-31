@@ -23,6 +23,7 @@ import System.FilePath (takeExtension)
 import System.Directory
 import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt)
 import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem)
+import qualified Cantor.Parser.Maven as Maven
 
 
 data Project = Prj { projectPath :: FilePath
@@ -38,7 +39,7 @@ scanProject db path = do
     let n = length dp
     let fps = map (drop n) files
     let ls = countSourceFiles db fps
-    let bs = readBS path (findBuildSystem db fps)
+    bs <- readBS path (findBuildSystem db fps)
     return $ Prj path fps ls bs
 
 -- | Count number of files for each language used in project
@@ -57,7 +58,7 @@ findBuildSystem db fps = if null xs2 then Nothing else f(head xs2)
           f (_, _) = Nothing
 
 -- Read build system data
-readBS :: FilePath -> Maybe (FilePath, String) -> BuildSystem
-readBS path Nothing = mkBuildSystem path "None"
-readBS path (Just (_fp, "Maven")) = mkBuildSystem path "Maven"
-readBS path (Just (_, xs)) = mkBuildSystem path xs
+readBS :: FilePath -> Maybe (FilePath, String) -> IO BuildSystem
+readBS path Nothing = return $ mkBuildSystem path "None" path
+readBS path (Just (fp, "Maven")) = Maven.parseFile (path ++ fp)
+readBS path (Just (_, xs)) = return $ mkBuildSystem path xs path

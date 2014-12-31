@@ -9,19 +9,12 @@ Portability : portable
 
 Parser for Maven POM file.
 -}
-module Cantor.Parser.Maven ( Maven
-                           , groupId
-                           , projectId
-                           , projectName
-                           , projectDescription
-                           , parseFile ) where
+module Cantor.Parser.Maven ( parseFile ) where
 
 import Text.XML.HXT.Core
 import Data.Tree.NTree.TypeDefs
 import Text.XML.HXT.XPath.XPathEval
-import System.FilePath (normalise)
-import System.Directory (doesFileExist)
-import Cantor.Parser.DataTypes(BuildSystem, mkBuildSystem)
+import Cantor.Parser.BuildSystem(BuildSystem, mkBuildSystem)
 
 
 
@@ -29,14 +22,13 @@ import Cantor.Parser.DataTypes(BuildSystem, mkBuildSystem)
 parseFile :: FilePath -> IO BuildSystem
 parseFile fp = do
     xs <- runX (readDocument [] fp)
-    let bs = mkBuildSystem fp "Maven"
-    -- let bs = bsFromPom fp (head xs)
+    let bs = bsFromPom fp (head xs)
     return bs
 
 
 -- Read metadata from pom XML
 bsFromPom :: FilePath -> XmlTree -> BuildSystem
-bsFromPom fp xt = mkBuildSystem fp (readName xt)
+bsFromPom fp xt = mkBuildSystem fp "Maven" (readName xt)
 
 
 -- Get project group from POM.

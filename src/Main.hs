@@ -20,7 +20,7 @@ import Cantor.Project (Project, projectLanguages, projectBuildSystem, scanProjec
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
 import Cantor.Analysis.Metrics (lineOfCode)
 import Cantor.Report
-import Cantor.Parser.BuildSystem (bsType)
+import Cantor.Parser.BuildSystem (bsProjectName, bsType)
 
 
 data Flag = Version -- -v
@@ -98,7 +98,8 @@ analyzeProject :: [Flag] -> FilePath -> IO ()
 analyzeProject xs src = do
     let db = loadKDB
     prj <- scanProject db src
-    let r0 = mkReport ("Project: " ++ src)
+    let pn = (bsProjectName . projectBuildSystem) prj
+    let r0 = mkReport ("Project: " ++ pn)
     rs <- mapM (\x -> (f x) db prj) xs
     let r1 = addChapters r0 rs
     putStrLn $ markdown r1

@@ -26,6 +26,7 @@ data BuildSystem = BS { bsFilePath :: String            -- Path to file with bui
 -- | Create new BuildSystem
 mkBuildSystem :: FilePath           -- Path to build readFile (eq. pom.xml)
               -> String             -- Build system name (eq. Maven)
+              -> String             -- Project name
               -> BuildSystem
-mkBuildSystem fp t = BS fp t "" ""
+mkBuildSystem fp t n = BS fp t n ""
 
