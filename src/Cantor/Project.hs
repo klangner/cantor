@@ -24,6 +24,7 @@ import System.Directory
 import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt)
 import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem)
 import qualified Cantor.Parser.Maven as Maven
+import qualified Cantor.Parser.Cabal as Cabal
 
 
 data Project = Prj { projectPath :: FilePath
@@ -61,4 +62,5 @@ findBuildSystem db fps = if null xs2 then Nothing else f(head xs2)
 readBS :: FilePath -> Maybe (FilePath, String) -> IO BuildSystem
 readBS path Nothing = return $ mkBuildSystem path "None" path
 readBS path (Just (fp, "Maven")) = Maven.parseFile (path ++ fp)
+readBS path (Just (fp, "Cabal")) = Cabal.parseFile (path ++ fp)
 readBS path (Just (_, xs)) = return $ mkBuildSystem path xs path

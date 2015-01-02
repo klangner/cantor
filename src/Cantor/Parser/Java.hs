@@ -24,19 +24,6 @@ import Cantor.Utils.Folder (listFilesR)
 parseFile :: FilePath -> IO (Either ParseError Package)
 parseFile = parseFromFile compilationUnit
 
-{-
--- | Parse all project directories
-parseProject :: FilePath -> IO [Package] 
-parseProject src = do
-    files <- listFilesR isJavaFile src
-    pkgs <- mapM parseFile files 
-    let validPkgs = concatMap f pkgs
-    return validPkgs
-        where f :: Either ParseError Package -> [Package] 
-              f (Right a) = [a]
-              f _ = []
--}
-
 -- | Parse java compilation unit
 compilationUnit :: Parser Package
 compilationUnit = do
