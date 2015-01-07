@@ -21,7 +21,8 @@ module Cantor.Parser.BuildSystem ( BuildSystem
 data BuildSystem = BS { bsFilePath :: String            -- Path to file with build information (eg pom.xml)
                       , bsType :: String                -- Name of the build system (eg. Maven)
                       , bsProjectName :: String         -- Project name taken from build file
-                      , bsSDK :: String }               -- SDK needed to compile project (eg. Java 1.7)
+                      , bsSDK :: String                 -- SDK needed to compile project (eg. Java 1.7)
+                      } deriving (Show)
 
 -- | Create new BuildSystem
 mkBuildSystem :: FilePath           -- Path to build readFile (eq. pom.xml)
