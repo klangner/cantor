@@ -135,8 +135,11 @@ reportBuildSystem db prj = do
 
 -- | Analize requirements
 reportRequirements :: KnowledgeDB -> Project -> IO Report
-reportRequirements _ _ = do
-    return $ mkChapter "Requirements" [mkParagraph [mkText "Not implemented yet"]]
+reportRequirements _ prj = do
+    let bs = projectBuildSystem prj
+    let xs1 = if bsType bs == "Cabal" then "Haskell Platform (https://www.haskell.org/platform/)"
+              else "Not found"
+    return $ mkChapter "Requirements" [mkParagraph [mkText xs1]]
 
 -- | Analize architecture
 reportArchitecture :: KnowledgeDB -> Project -> IO Report
