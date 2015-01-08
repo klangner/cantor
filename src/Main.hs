@@ -16,7 +16,7 @@ import System.Console.GetOpt
 import System.Exit
 import Paths_cantor (version)
 import Data.Version (showVersion)
-import Cantor.Project (Project, projectLanguages, projectBuildSystem, scanProject)
+import Cantor.Project (Project, projectLanguages, projectBuildSystem, projectReqs, scanProject)
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
 import Cantor.Analysis.Metrics (lineOfCode)
 import Cantor.Report
@@ -136,9 +136,7 @@ reportBuildSystem db prj = do
 -- | Analize requirements
 reportRequirements :: KnowledgeDB -> Project -> IO Report
 reportRequirements _ prj = do
-    let bs = projectBuildSystem prj
-    let xs1 = if bsType bs == "Cabal" then "Haskell Platform (https://www.haskell.org/platform/)"
-              else "Not found"
+    let xs1 = concat (projectReqs prj)
     return $ mkChapter "Requirements" [mkParagraph [mkText xs1]]
 
 -- | Analize architecture

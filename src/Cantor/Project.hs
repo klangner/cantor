@@ -14,6 +14,7 @@ module Cantor.Project ( Project
                       , projectPath
                       , projectFiles
                       , projectLanguages
+                      , projectReqs
                       , scanProject ) where
 
 import Data.List
@@ -22,14 +23,15 @@ import Cantor.Utils.Folder (listFilesR)
 import System.FilePath (takeExtension)
 import System.Directory
 import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt)
-import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem)
+import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem, bsType)
 import qualified Cantor.Parser.Maven as Maven
 import qualified Cantor.Parser.Cabal as Cabal
 
 
 data Project = Prj { projectPath :: FilePath
-                   , projectFiles :: [FilePath]
-                   , projectLanguages :: [(String, Int)]  -- Language name and file count
+                   , projectFiles :: [FilePath]             -- All project files
+                   , projectLanguages :: [(String, Int)]    -- Language name and file count
+                   , projectReqs :: [String]                -- Project requirements (eq. Haskell Platform)
                    , projectBuildSystem :: BuildSystem }
 
 -- | Create new project by scanning all files at given path
@@ -41,7 +43,8 @@ scanProject db path = do
     let fps = map (drop n) files
     let ls = countSourceFiles db fps
     bs <- readBS path (findBuildSystem db fps)
-    return $ Prj path fps ls bs
+    let reqs = findRequirements bs
+    return $ Prj path fps ls reqs bs
 
 -- | Count number of files for each language used in project
 countSourceFiles :: KnowledgeDB -> [FilePath] -> [(String, Int)]
@@ -64,3 +67,7 @@ readBS path Nothing = return $ mkBuildSystem path "None" path
 readBS path (Just (fp, "Maven")) = Maven.parseFile (path ++ fp)
 readBS path (Just (fp, "Cabal")) = Cabal.parseFile (path ++ fp)
 readBS path (Just (_, xs)) = return $ mkBuildSystem path xs path
+
+-- Get requirements from build system
+findRequirements :: BuildSystem -> [String]
+findRequirements bs = if bsType bs == "Cabal" then ["Haskell Platform (https://www.haskell.org/platform/)"] else []
