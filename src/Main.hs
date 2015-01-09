@@ -136,8 +136,8 @@ reportBuildSystem db prj = do
 -- | Analize requirements
 reportRequirements :: KnowledgeDB -> Project -> IO Report
 reportRequirements _ prj = do
-    let xs1 = concat (projectReqs prj)
-    return $ mkChapter "Requirements" [mkParagraph [mkText xs1]]
+    let reqs = projectReqs prj
+    return $ mkChapter "Requirements" [mkList reqs]
 
 -- | Analize architecture
 reportArchitecture :: KnowledgeDB -> Project -> IO Report

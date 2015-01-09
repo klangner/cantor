@@ -22,8 +22,8 @@ import Data.Maybe (isJust)
 import Cantor.Utils.Folder (listFilesR)
 import System.FilePath (takeExtension)
 import System.Directory
-import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt)
-import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem, bsType)
+import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt, reqFromKey)
+import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem)
 import qualified Cantor.Parser.Maven as Maven
 import qualified Cantor.Parser.Cabal as Cabal
 
@@ -43,7 +43,7 @@ scanProject db path = do
     let fps = map (drop n) files
     let ls = countSourceFiles db fps
     bs <- readBS path (findBuildSystem db fps)
-    let reqs = findRequirements bs
+    let reqs = findRequirements db (map fst ls) bs
     return $ Prj path fps ls reqs bs
 
 -- | Count number of files for each language used in project
@@ -69,5 +69,5 @@ readBS path (Just (fp, "Cabal")) = Cabal.parseFile (path ++ fp)
 readBS path (Just (_, xs)) = return $ mkBuildSystem path xs path
 
 -- Get requirements from build system
-findRequirements :: BuildSystem -> [String]
-findRequirements bs = if bsType bs == "Cabal" then ["Haskell Platform (https://www.haskell.org/platform/)"] else []
+findRequirements :: KnowledgeDB -> [String] -> BuildSystem -> [String]
+findRequirements db lang _ = concatMap (reqFromKey db) lang

@@ -13,7 +13,8 @@ module Cantor.KnowledgeDB ( KnowledgeDB
                           , bsFromFilePath
                           , conceptUrl
                           , loadKDB
-                          , langFromExt ) where
+                          , langFromExt
+                          , reqFromKey ) where
 
 import qualified Data.Map as Map
 import Data.List (isSuffixOf)
@@ -21,15 +22,16 @@ import Data.Maybe (fromMaybe)
 import Data.Char
 
 
-data KnowledgeDB = KDB { extensions :: Map.Map String [String]  -- file extension -> Programming language
-                       , buildSystems :: [(String, String)]  -- filename -> build system
-                       , concepts :: Map.Map String String }    -- concept URLs
+data KnowledgeDB = KDB { extensions :: Map.Map String [String]      -- file extension -> Programming language
+                       , buildSystems :: [(String, String)]         -- filename -> build system
+                       , requirements :: Map.Map String [String]    -- keyword -> Requrement list
+                       , concepts :: Map.Map String String }        -- concept URLs
 
 -- | Create knowledge database
 --   Currently this db contains hardcoded data.
 --   In the future it should be refactored to read data from external files.
 loadKDB :: KnowledgeDB
-loadKDB = KDB languageExtDB buildSystemDB conceptUrlDB
+loadKDB = KDB languageExtDB buildSystemDB requirementDB conceptUrlDB
 
 -- | Get language name based on given extension
 --   Since some extension can be used by different languages (like *.h)
@@ -44,12 +46,19 @@ bsFromFilePath db fp = if null ys then Nothing else Just (head ys)
     where xs = filter (\(x,_) -> isSuffixOf x fp) (buildSystems db)
           ys = map (\(_,y) -> y) xs
 
+-- | Get requirements based on keyword
+reqFromKey :: KnowledgeDB -> String -> [String]
+reqFromKey db key = fromMaybe [] e
+    where e = Map.lookup (toLowerStr key) (requirements db)
 
 -- | Get URL describing concept
 conceptUrl :: KnowledgeDB -> String -> String
 conceptUrl db c = fromMaybe "" e
-    where e = Map.lookup (map toLower c) (concepts db)
+    where e = Map.lookup (toLowerStr c) (concepts db)
 
+-- Supporting functions
+toLowerStr :: String -> String
+toLowerStr = map toLower
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- The structures below eventually will be moved to the external text files
@@ -92,6 +101,20 @@ buildSystemDB = [ ("CMakeLists.txt", "CMake")
                 , ("Makefile", "Make")
                 , ("Makefile.in", "Make")
                 , (".sbt", "SBT")]
+
+-- Requirements
+requirementDB :: Map.Map String [String]
+requirementDB = Map.fromList [ ("c", ["C compiler"])
+                             , ("c", ["C++ compiler"])
+                             , ("clojure", ["Java JDK"])
+                             , ("c#", [".NET (http://www.microsoft.com/net) or Mono (http://www.mono-project.com/)"])
+                             , ("f#", [".NET (http://www.microsoft.com/net) or Mono (http://www.mono-project.com/)"])
+                             , ("go", ["go compiler (https://golang.org/doc/install)"])
+                             , ("haskell", ["Haskell Platform (https://www.haskell.org/platform"])
+                             , ("java", ["Java JDK"])
+                             , ("ocaml", ["OPAM (https://opam.ocaml.org/)"])
+                             , ("objective-c", ["Objective-c compiler"])
+                             , ("scala", ["Java JDK"])]
 
 -- URLs with additional information about concepts
 conceptUrlDB :: Map.Map String String
