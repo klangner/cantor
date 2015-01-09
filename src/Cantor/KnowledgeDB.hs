@@ -89,6 +89,7 @@ buildSystemDB = [ ("CMakeLists.txt", "CMake")
                 , ("project.clj", "Leiningen")
                 , ("pom.xml", "Maven")
                 , ("Rakefile", "Rake")
+                , ("Makefile", "Make")
                 , ("Makefile.in", "Make")
                 , (".sbt", "SBT")]
 
