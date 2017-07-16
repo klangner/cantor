@@ -20,7 +20,7 @@ import Cantor.Project (Project, projectLanguages, projectBuildSystem, projectReq
 import Cantor.KnowledgeDB (KnowledgeDB, conceptUrl, loadKDB)
 import Cantor.Analysis.Metrics (lineOfCode)
 import Cantor.Report
-import Cantor.Parser.BuildSystem (bsProjectName, bsType)
+import Cantor.Build.BuildSystem (bsProjectName, bsType)
 
 
 data Flag = Version -- -v

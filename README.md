@@ -24,14 +24,15 @@ cabal install cantor
 cantor <project_source_path>
 ```
 
-## Building
+## Architecture
 
-```sh
-$ cabal sandbox init                   # Initialise the sandbox
-$ cabal install --only-dependencies    # Install dependencies into the sandbox
-$ cabal build                          # Build application
-```
+Folders:
 
+ * Cantor.Build - Contains parsers for various build systems (SBT, Cabal, Maven, etc)
+ * Cantor.Parser - Parsers for various source files (Haskell, Scala, Java)
+ * Cantor.Analysis - Analysis
+ * Cantor.Utils - Utility functions
+ 
 
 ## Redistributing
 This code is distributed under BSD3 License. It may be freely redistributed, subject to the provisions of this license.

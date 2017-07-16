@@ -23,9 +23,9 @@ import Cantor.Utils.Folder (listFilesR)
 import System.FilePath (takeExtension)
 import System.Directory
 import Cantor.KnowledgeDB (KnowledgeDB, bsFromFilePath, langFromExt, reqFromKey)
-import Cantor.Parser.BuildSystem (BuildSystem, mkBuildSystem)
-import qualified Cantor.Parser.Maven as Maven
-import qualified Cantor.Parser.Cabal as Cabal
+import Cantor.Build.BuildSystem (BuildSystem, mkBuildSystem)
+import qualified Cantor.Build.Maven as Maven
+import qualified Cantor.Build.Cabal as Cabal
 
 
 data Project = Prj { projectPath :: FilePath

@@ -1,5 +1,5 @@
 {- |
-Module : Cantor.Parser.Maven
+Module : Cantor.Build.Maven
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -9,12 +9,12 @@ Portability : portable
 
 Parser for Maven POM file.
 -}
-module Cantor.Parser.Maven ( parseFile ) where
+module Cantor.Build.Maven ( parseFile ) where
 
 import Text.XML.HXT.Core
 import Data.Tree.NTree.TypeDefs
 import Text.XML.HXT.XPath.XPathEval
-import Cantor.Parser.BuildSystem(BuildSystem, mkBuildSystem)
+import Cantor.Build.BuildSystem(BuildSystem, mkBuildSystem)
 
 
 

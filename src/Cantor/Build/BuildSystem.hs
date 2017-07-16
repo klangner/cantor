@@ -1,5 +1,5 @@
 {- |
-Module : Cantor.Parser.BuildSystem
+Module : Cantor.Build.BuildSystem
 Copyright : Copyright (C) 2014 Krzysztof Langner
 License : BSD3
 
@@ -9,7 +9,7 @@ Portability : portable
 
 Data types used by different parsers
 -}
-module Cantor.Parser.BuildSystem ( BuildSystem
+module Cantor.Build.BuildSystem ( BuildSystem
                                  , bsFilePath
                                  , bsProjectName
                                  , bsSDK

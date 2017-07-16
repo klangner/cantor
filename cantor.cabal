@@ -44,7 +44,6 @@ executable cantor
                     split >=0.2.2 && <0.3,
                     text >= 1.2 && <2
                     
-
   ghc-options:      -Wall -threaded
 
 test-suite spec
@@ -64,7 +63,6 @@ test-suite spec
                     containers >=0.5.0 && <1,
                     bytestring >=0.10.0 && <1,
                     split >=0.2.2 && <1
-                    --text >= 1.2 && <2
 
   hs-source-dirs:
                     src,
