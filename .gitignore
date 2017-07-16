@@ -1,11 +1,7 @@
-/.dist-buildwrapper
-/.settings
-/dist
-/report
 /SourceGraph
 /cabal.sandbox.config
-/.cabal-sandbox
-/out
 /cantor.iml
 /.idea
 /samples
+/.stack-work
+/report

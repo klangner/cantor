@@ -1,0 +1,12 @@
+resolver: lts-8.18
+
+packages:
+- '.'
+
+extra-deps:
+- hxt-xpath-9.1.2.2
+
+flags: {}
+
+extra-package-dbs: []
+
